@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ORVIQO
 
-## Getting Started
+The marketing site for **ORVIQO** — an independent digital studio building premium
+websites, AI solutions, SEO and brand identities for ambitious companies worldwide.
 
-First, run the development server:
+> The quiet kind of famous.
+
+## Stack
+
+- **Next.js** (App Router) with static export (`output: "export"`)
+- **TypeScript** + **Tailwind CSS v4**
+- **Motion** for animation · **Lenis** for smooth scroll
+- Fully static — no server, no database
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3002
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build      # generates the static site into out/
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy
 
-## Learn More
+Pushing to `main` triggers a GitHub Actions workflow
+([`deploy-hostinger.yml`](.github/workflows/deploy-hostinger.yml)) that builds the
+static site and force-pushes the contents of `out/` to the `hostinger` branch.
+Hostinger's Git integration serves that branch.
 
-To learn more about Next.js, take a look at the following resources:
+## Content
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Everything editable lives in `src/lib/`:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| File          | Holds                                            |
+| ------------- | ------------------------------------------------ |
+| `site.ts`     | Studio name, email, socials, navigation          |
+| `services.ts` | The five service offerings                       |
+| `projects.ts` | Portfolio projects & case studies                |
+| `posts.ts`    | Journal essays                                   |
+| `content.ts`  | Metrics, principles, process, testimonials, FAQs |
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> **Before launch:** the case studies, testimonials and metrics are illustrative
+> samples and must be replaced with real ORVIQO work.
