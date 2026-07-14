@@ -6,6 +6,7 @@ import Cursor from "@/components/Cursor";
 import Preloader from "@/components/Preloader";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import AgentChat from "@/components/AgentChat";
 import { site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -106,6 +107,7 @@ export default function RootLayout({
         <Nav />
         <main id="main">{children}</main>
         <Footer />
+        <AgentChat />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
