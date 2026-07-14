@@ -36,7 +36,6 @@ export const nav = {
     studio: [
       { label: "About", href: "/about/" },
       { label: "Process", href: "/process/" },
-      { label: "Testimonials", href: "/testimonials/" },
       { label: "Careers", href: "/careers/" },
     ],
     work: [

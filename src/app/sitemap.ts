@@ -14,7 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "work",
     "case-studies",
     "process",
-    "testimonials",
     "journal",
     "careers",
     "contact",

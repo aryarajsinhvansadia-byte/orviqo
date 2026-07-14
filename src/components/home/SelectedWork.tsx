@@ -5,7 +5,7 @@ import { Rise } from "@/components/motion";
 import { featuredProjects } from "@/lib/projects";
 
 export default function SelectedWork() {
-  const [a, b, c, d] = featuredProjects;
+  const [a, b] = featuredProjects;
   return (
     <section className="shell section">
       <SectionHead
@@ -16,19 +16,17 @@ export default function SelectedWork() {
           </>
         }
       />
-      <div className="mt-16 grid gap-x-10 gap-y-16 md:grid-cols-12">
-        <Rise className="md:col-span-7">
-          <ProjectCard project={a} aspect="aspect-[16/11]" />
-        </Rise>
-        <Rise delay={0.12} className="md:col-span-5 md:mt-28">
-          <ProjectCard project={b} aspect="aspect-[4/5] md:aspect-[4/4.6]" />
-        </Rise>
-        <Rise className="md:col-span-5 md:-mt-10">
-          <ProjectCard project={c} aspect="aspect-[4/5] md:aspect-[4/4.6]" />
-        </Rise>
-        <Rise delay={0.12} className="md:col-span-7 md:mt-16">
-          <ProjectCard project={d} aspect="aspect-[16/11]" />
-        </Rise>
+      <div className="mt-16 grid gap-x-12 gap-y-16 md:grid-cols-2">
+        {a && (
+          <Rise className="md:mt-0">
+            <ProjectCard project={a} aspect="aspect-[4/3]" />
+          </Rise>
+        )}
+        {b && (
+          <Rise delay={0.12} className="md:mt-24">
+            <ProjectCard project={b} aspect="aspect-[4/3]" />
+          </Rise>
+        )}
       </div>
       <Rise className="mt-16 flex justify-center">
         <Button href="/work/" variant="ghost">

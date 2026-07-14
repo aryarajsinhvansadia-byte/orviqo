@@ -58,44 +58,6 @@ export const processPhases = [
   },
 ];
 
-export const testimonials = [
-  {
-    quote:
-      "They kept removing things until only the persuasive parts were left. Our enquiries tripled and the site somehow got calmer.",
-    author: "Elena Marchetti",
-    role: "Managing Partner, Auren",
-    project: "auren",
-  },
-  {
-    quote:
-      "ORVIQO treated a two-person pottery studio with the seriousness of a luxury house. The shop paid for itself in nine weeks.",
-    author: "Mads Kjeldsen",
-    role: "Founder, Kilnhouse",
-    project: "kilnhouse",
-  },
-  {
-    quote:
-      "The AI assistant they built answers questions our own staff used to get wrong. Call volume dropped by two thirds.",
-    author: "Dr. Priya Raman",
-    role: "COO, Solace Health",
-    project: "solace-health",
-  },
-  {
-    quote:
-      "Investors kept mentioning the website in diligence calls. That has never happened to me before.",
-    author: "Wei Lin Tan",
-    role: "CEO, Loomline",
-    project: "loomline",
-  },
-  {
-    quote:
-      "Direct bookings almost doubled. The site feels like our lobby — people arrive already relaxed.",
-    author: "Sofia Almeida",
-    role: "Brand Director, Ondo Hotels",
-    project: "ondo",
-  },
-];
-
 export const faqs = [
   {
     q: "What does a project cost?",

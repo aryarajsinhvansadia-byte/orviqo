@@ -5,7 +5,6 @@ import SelectedWork from "@/components/home/SelectedWork";
 import ServicesIndex from "@/components/home/ServicesIndex";
 import Standard from "@/components/home/Standard";
 import ProcessTeaser from "@/components/home/ProcessTeaser";
-import Testimonials from "@/components/home/Testimonials";
 import Stack from "@/components/home/Stack";
 import Faq from "@/components/home/Faq";
 import Insights from "@/components/home/Insights";
@@ -39,7 +38,6 @@ export default function Home() {
         <ServicesIndex />
         <Standard />
         <ProcessTeaser />
-        <Testimonials />
         <Stack />
         <Faq />
         <Insights />

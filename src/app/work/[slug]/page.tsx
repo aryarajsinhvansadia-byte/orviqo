@@ -91,6 +91,27 @@ export default async function CaseStudyPage({
             {project.narrative}
           </p>
         </Rise>
+        {project.liveUrl && (
+          <Rise delay={0.3}>
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="Visit"
+              className="group mt-8 inline-flex items-center gap-3 rounded-full border border-hairline px-6 py-3 text-moon transition-colors duration-300 hover:border-corona-soft/60"
+            >
+              <span className="mono-s">
+                Visit {project.liveUrl.replace(/^https?:\/\//, "")}
+              </span>
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              >
+                ↗
+              </span>
+            </a>
+          </Rise>
+        )}
         <Rise delay={0.35}>
           <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-hairline pt-6 md:grid-cols-4">
             <div>
