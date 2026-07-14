@@ -1,0 +1,8 @@
+1:"$Sreact.fragment"
+2:I[43494,["/_next/static/chunks/22kv7uenbb4_8.js","/_next/static/chunks/0d58iq93bhafd.js","/_next/static/chunks/33ju7w5zbrng3.js"],"Rise"]
+3:I[43494,["/_next/static/chunks/22kv7uenbb4_8.js","/_next/static/chunks/0d58iq93bhafd.js","/_next/static/chunks/33ju7w5zbrng3.js"],"MaskLines"]
+4:I[47906,["/_next/static/chunks/22kv7uenbb4_8.js","/_next/static/chunks/0d58iq93bhafd.js","/_next/static/chunks/33ju7w5zbrng3.js"],"default"]
+5:I[97367,["/_next/static/chunks/05-c3ty_6dwfk.js","/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
+6:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[[["$","header",null,{"className":"shell pt-40 pb-16 md:pt-48 md:pb-20","children":[["$","$L2",null,{"children":["$","p",null,{"className":"eyebrow mb-8","children":"The exhibition"}]}],["$","$L3",null,{"as":"h1","className":"display display-hero max-w-5xl","delay":0.1,"eager":true,"lines":[["$","span","l1",{"children":"Work that earned"}],["$","span","l2",{"children":["its ",["$","em",null,{"className":"serif-i not-italic","children":"quiet."}]]}]]}],["$","$L2",null,{"delay":0.3,"children":["$","p",null,{"className":"mt-10 max-w-xl text-lg text-ash","children":"Every project here shipped, performed, and paid for itself. Browse by discipline — or wander."}]}]]}],["$","section",null,{"className":"shell pb-32","children":["$","$L4",null,{}]}]],[["$","script","script-0",{"src":"/_next/static/chunks/33ju7w5zbrng3.js","async":true}]],["$","$L5",null,{"children":["$","$6",null,{"name":"Next.MetadataOutlet","children":"$@7"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"TW8zL5HRe0Y5Z76IOOnTX"}
+7:null
