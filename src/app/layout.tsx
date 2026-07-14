@@ -7,6 +7,7 @@ import Preloader from "@/components/Preloader";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import AgentChat from "@/components/AgentChat";
+import LivingBackground from "@/components/LivingBackground";
 import { site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -101,6 +102,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <LivingBackground />
         <Preloader />
         <SmoothScroll />
         <Cursor />

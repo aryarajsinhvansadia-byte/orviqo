@@ -9,6 +9,7 @@ import Stack from "@/components/home/Stack";
 import Faq from "@/components/home/Faq";
 import Insights from "@/components/home/Insights";
 import CtaBand from "@/components/home/CtaBand";
+import Marquee from "@/components/Marquee";
 import { faqs } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -28,21 +29,19 @@ const faqJsonLd = {
 export default function Home() {
   return (
     <>
-      {/* pinned hero: the scene beneath — the next act scrolls over it */}
-      <div className="md:sticky md:top-0 md:z-0">
-        <Hero />
-      </div>
-      <div className="relative z-10 bg-night">
-        <Manifesto />
-        <SelectedWork />
-        <ServicesIndex />
-        <Standard />
-        <ProcessTeaser />
-        <Stack />
-        <Faq />
-        <Insights />
-        <CtaBand />
-      </div>
+      {/* Sections float over the living background; the dawn + slate bands
+          are intentional opaque "scenes" that punctuate the aurora. */}
+      <Hero />
+      <Manifesto />
+      <Marquee />
+      <SelectedWork />
+      <ServicesIndex />
+      <Standard />
+      <ProcessTeaser />
+      <Stack />
+      <Faq />
+      <Insights />
+      <CtaBand />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}

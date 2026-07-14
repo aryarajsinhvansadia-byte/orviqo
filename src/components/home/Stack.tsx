@@ -1,4 +1,5 @@
 import SectionHead from "@/components/SectionHead";
+import Spotlight from "@/components/Spotlight";
 import { Stagger, StaggerItem } from "@/components/motion";
 import { stack } from "@/lib/content";
 
@@ -18,12 +19,15 @@ export default function Stack() {
       <Stagger gap={0.04} className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-[3px] border border-hairline bg-hairline md:grid-cols-4">
         {stack.map((item) => (
           <StaggerItem key={item.name}>
-            <div className="group h-full bg-night p-6 transition-colors duration-300 hover:bg-slate">
-              <p className="mono-s text-moon transition-colors group-hover:text-corona-soft">
+            <Spotlight
+              radius={200}
+              className="h-full bg-night p-6 transition-colors duration-300 hover:bg-slate"
+            >
+              <p className="mono-s text-moon transition-colors group-hover/spot:text-corona-soft">
                 {item.name}
               </p>
               <p className="mono-s mt-1 text-ash">{item.role}</p>
-            </div>
+            </Spotlight>
           </StaggerItem>
         ))}
       </Stagger>

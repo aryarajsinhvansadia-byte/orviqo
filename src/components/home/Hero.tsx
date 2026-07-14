@@ -43,7 +43,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="eyebrow mb-8"
         >
-          Independent digital studio — working worldwide
+          Independent product studio — working worldwide
         </motion.p>
 
         <MaskLines
@@ -66,8 +66,8 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.05, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-md text-lg text-ash"
           >
-            Websites, brands and AI systems engineered for companies that would
-            rather be remembered than merely noticed.
+            We design and engineer digital products, brands and AI systems for
+            companies building what comes next.
           </motion.p>
           <motion.div
             initial={reduced ? false : { opacity: 0, y: 20 }}
