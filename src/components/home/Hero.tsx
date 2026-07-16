@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import Button from "@/components/Button";
 import Orb from "@/components/Orb";
+import ScrambleText from "@/components/ScrambleText";
 import { MaskLines } from "@/components/motion";
 
 export default function Hero() {
@@ -41,9 +42,12 @@ export default function Hero() {
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="eyebrow mb-8"
+          className="mb-8"
         >
-          Independent product studio — working worldwide
+          <ScrambleText
+            text="Independent product studio — working worldwide"
+            className="eyebrow"
+          />
         </motion.p>
 
         <MaskLines

@@ -1,4 +1,5 @@
 import { Rise } from "@/components/motion";
+import ScrambleText from "@/components/ScrambleText";
 
 /** Standard section opener: mono eyebrow over a hairline, then a display headline. */
 export default function SectionHead({
@@ -29,7 +30,10 @@ export default function SectionHead({
               boxShadow: "0 0 8px rgba(255,139,61,0.6)",
             }}
           />
-          <span className={`eyebrow ${light ? "text-night/55" : ""}`}>{eyebrow}</span>
+          <ScrambleText
+            text={eyebrow}
+            className={`eyebrow ${light ? "text-night/55" : ""}`}
+          />
         </div>
       </Rise>
       {title && (

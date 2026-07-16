@@ -1,4 +1,5 @@
 import { MaskLines, Rise } from "@/components/motion";
+import ScrambleText from "@/components/ScrambleText";
 
 export default function PageHero({
   eyebrow,
@@ -12,7 +13,7 @@ export default function PageHero({
   return (
     <header className="shell pt-40 pb-16 md:pt-48 md:pb-20">
       <Rise>
-        <p className="eyebrow mb-8">{eyebrow}</p>
+        <ScrambleText as="p" text={eyebrow} className="eyebrow mb-8" />
       </Rise>
       <MaskLines
         as="h1"

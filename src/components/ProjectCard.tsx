@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Project } from "@/lib/projects";
 import ProjectArt from "@/components/ProjectArt";
 import Parallax from "@/components/Parallax";
+import TiltCard from "@/components/TiltCard";
 
 export default function ProjectCard({
   project,
@@ -16,7 +17,7 @@ export default function ProjectCard({
 }) {
   return (
     <article className="group">
-      <div className={`relative overflow-hidden rounded-[3px] ${aspect}`}>
+      <TiltCard className={`overflow-hidden rounded-[3px] ${aspect}`}>
         <div className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.045]">
           <Parallax amount={0.05} className="h-full w-full">
             <ProjectArt {...project.art} />
@@ -41,7 +42,7 @@ export default function ProjectCard({
             Preview ↗
           </button>
         )}
-      </div>
+      </TiltCard>
       <div className="mt-5 flex items-baseline justify-between gap-6 border-b border-hairline pb-5">
         <div>
           <h3 className="display display-md transition-colors duration-300 group-hover:text-corona-soft">
