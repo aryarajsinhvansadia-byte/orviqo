@@ -8,6 +8,7 @@ export type Project = {
   year: string;
   narrative: string;
   liveUrl?: string;
+  cover?: string;
   services: string[];
   categories: ("web" | "brand" | "ai" | "commerce" | "seo")[];
   summary: string;
@@ -29,6 +30,7 @@ export const projects: Project[] = [
     year: "2025",
     narrative: "Credibility, catalogued.",
     liveUrl: "https://revadiagnostics.com",
+    cover: "/work/reva-diagnostics.jpg",
     services: ["Web experience", "Content architecture", "SEO"],
     categories: ["web", "seo"],
     summary:
@@ -61,6 +63,7 @@ export const projects: Project[] = [
     year: "2025",
     narrative: "Rooms that feel inevitable.",
     liveUrl: "https://we2interiors.com",
+    cover: "/work/we2-interiors.jpg",
     services: ["Web experience", "Art direction", "Brand identity"],
     categories: ["web", "brand"],
     summary:

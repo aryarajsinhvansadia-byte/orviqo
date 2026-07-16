@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { Project } from "@/lib/projects";
-import ProjectArt from "@/components/ProjectArt";
+import ProjectMedia from "@/components/ProjectMedia";
 import Parallax from "@/components/Parallax";
 import TiltCard from "@/components/TiltCard";
 
@@ -20,7 +20,7 @@ export default function ProjectCard({
       <TiltCard className={`overflow-hidden rounded-[3px] ${aspect}`}>
         <div className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.045]">
           <Parallax amount={0.05} className="h-full w-full">
-            <ProjectArt {...project.art} />
+            <ProjectMedia project={project} />
           </Parallax>
         </div>
         <Link

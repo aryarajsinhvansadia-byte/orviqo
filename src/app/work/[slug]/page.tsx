@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ProjectArt from "@/components/ProjectArt";
+import ProjectMedia from "@/components/ProjectMedia";
 import Parallax from "@/components/Parallax";
 import ReadingProgress from "@/components/ReadingProgress";
 import { MaskLines, Rise } from "@/components/motion";
@@ -137,7 +137,7 @@ export default async function CaseStudyPage({
       {/* full-bleed cinematic plate */}
       <Rise className="mt-16">
         <Parallax className="h-[68svh] w-full max-md:h-[46svh]">
-          <ProjectArt {...project.art} />
+          <ProjectMedia project={project} priority />
         </Parallax>
       </Rise>
 

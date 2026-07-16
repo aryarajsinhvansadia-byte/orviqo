@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { Project } from "@/lib/projects";
-import ProjectArt from "@/components/ProjectArt";
+import ProjectMedia from "@/components/ProjectMedia";
 import { startScroll, stopScroll } from "@/components/SmoothScroll";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -62,10 +62,10 @@ export default function ProjectPreview({
           transition={{ duration: reduced ? 0 : 0.75, ease: EASE }}
         >
           <div className="relative min-h-svh">
-            <ProjectArt
-              {...project.art}
+            <ProjectMedia
+              project={project}
               fill
-              className="absolute inset-0 brightness-125 contrast-125 saturate-125"
+              className="brightness-110 contrast-105"
             />
             <div
               className="absolute inset-0"
