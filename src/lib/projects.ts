@@ -23,39 +23,6 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "reva-diagnostics",
-    client: "Reva Diagnostics",
-    sector: "Medical devices & diagnostics",
-    location: "Vadodara",
-    year: "2025",
-    narrative: "Credibility, catalogued.",
-    liveUrl: "https://revadiagnostics.com",
-    cover: "/work/reva-diagnostics.jpg",
-    services: ["Web experience", "Content architecture", "SEO"],
-    categories: ["web", "seo"],
-    summary:
-      "A fully static website for a medical-supply company — presenting a deep catalogue of analysers, diagnostic kits and lab consumables to the institutional buyers who purchase them.",
-    challenge: [
-      "Reva Diagnostics supplies devices, diagnostic kits and laboratory consumables to hospitals and pathology labs — buyers who commit only once they trust the supplier. Their range spans proprietary biochemistry and haematology analysers alongside hundreds of third-party products, and it all had to be legible to a procurement officer scanning quickly.",
-      "In healthcare supply, credibility is the whole sale. The site had to make certifications, turnaround and product breadth obvious in seconds, not buried three clicks deep.",
-    ],
-    approach: [
-      "We built the catalogue around how buyers actually shop: clear product families, the in-house analyser line given its own space, and consumables organised so nothing gets lost. Compliance — ISO 13485, CE — is surfaced early rather than tucked into a footer.",
-      "The whole site ships as a static export on a global CDN, so it loads fast and there is no server to break or patch. An enquiry flow turns a product page into a quote request in a couple of clicks.",
-      "The build auto-deploys: the Reva team pushes a change and the live site updates itself, no developer in the loop.",
-    ],
-    outcome: [
-      "Reva now has a credible digital front door for institutional buyers — a place where a lab manager can find a product, verify certification, and request a quote without friction. The catalogue is structured for search engines as cleanly as it is for people.",
-    ],
-    metrics: [
-      { value: "500+", label: "Products organised for buyers" },
-      { value: "Static", label: "Zero-server, CDN-delivered" },
-      { value: "Auto", label: "Publishes on every edit" },
-    ],
-    art: { from: "#0e1a24", to: "#2f6f7a", variant: "halo" },
-    featured: true,
-  },
-  {
     slug: "we2-interiors",
     client: "we2 Interiors",
     sector: "Interior & architecture studio",
@@ -86,6 +53,39 @@ export const projects: Project[] = [
       { value: "Bespoke", label: "Designed, never templated" },
     ],
     art: { from: "#241d16", to: "#7a6248", variant: "dune" },
+    featured: true,
+  },
+  {
+    slug: "reva-diagnostics",
+    client: "Reva Diagnostics",
+    sector: "Medical devices & diagnostics",
+    location: "Vadodara",
+    year: "2025",
+    narrative: "Credibility, catalogued.",
+    liveUrl: "https://revadiagnostics.com",
+    cover: "/work/reva-diagnostics.jpg",
+    services: ["Web experience", "Content architecture", "SEO"],
+    categories: ["web", "seo"],
+    summary:
+      "A fully static website for a medical-supply company — presenting a deep catalogue of analysers, diagnostic kits and lab consumables to the institutional buyers who purchase them.",
+    challenge: [
+      "Reva Diagnostics supplies devices, diagnostic kits and laboratory consumables to hospitals and pathology labs — buyers who commit only once they trust the supplier. Their range spans proprietary biochemistry and haematology analysers alongside hundreds of third-party products, and it all had to be legible to a procurement officer scanning quickly.",
+      "In healthcare supply, credibility is the whole sale. The site had to make certifications, turnaround and product breadth obvious in seconds, not buried three clicks deep.",
+    ],
+    approach: [
+      "We built the catalogue around how buyers actually shop: clear product families, the in-house analyser line given its own space, and consumables organised so nothing gets lost. Compliance — ISO 13485, CE — is surfaced early rather than tucked into a footer.",
+      "The whole site ships as a static export on a global CDN, so it loads fast and there is no server to break or patch. An enquiry flow turns a product page into a quote request in a couple of clicks.",
+      "The build auto-deploys: the Reva team pushes a change and the live site updates itself, no developer in the loop.",
+    ],
+    outcome: [
+      "Reva now has a credible digital front door for institutional buyers — a place where a lab manager can find a product, verify certification, and request a quote without friction. The catalogue is structured for search engines as cleanly as it is for people.",
+    ],
+    metrics: [
+      { value: "500+", label: "Products organised for buyers" },
+      { value: "Static", label: "Zero-server, CDN-delivered" },
+      { value: "Auto", label: "Publishes on every edit" },
+    ],
+    art: { from: "#0e1a24", to: "#2f6f7a", variant: "halo" },
     featured: true,
   },
 ];

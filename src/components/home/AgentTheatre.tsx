@@ -19,7 +19,7 @@ type Ev =
   | { type: "done"; live: boolean };
 
 const SAMPLE_BRIEF =
-  "A dental clinic in Pune — we want online appointment booking, fewer no-shows, and to finally rank on Google.";
+  "An interior design studio in Mumbai — we want a premium portfolio site and an AI assistant for client enquiries.";
 
 export default function AgentTheatre() {
   const [events, setEvents] = useState<Ev[]>([]);

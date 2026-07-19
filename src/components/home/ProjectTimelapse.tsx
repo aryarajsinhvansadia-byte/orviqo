@@ -13,7 +13,7 @@ import ScrambleText from "@/components/ScrambleText";
 /**
  * The timelapse — a scroll-directed film of a project being born.
  * The section pins; the visitor's scroll is the playhead. Inside a browser
- * frame, the Reva Diagnostics build assembles in four scenes:
+ * frame, the we2 Interiors build assembles in four scenes:
  *
  *   Week 0  The brief        — words on a dark screen
  *   Week 1  Wireframes       — a skeleton draws itself, matching the real layout
@@ -44,10 +44,10 @@ export default function ProjectTimelapse() {
   const briefY = useTransform(p, [0, 0.26], [0, -30]);
 
   // wireframe assembles in four strokes, then hands over to the build
-  const wfNav = useTransform(p, [0.14, 0.19], [0, 1]);
-  const wfHead = useTransform(p, [0.19, 0.25], [0, 1]);
-  const wfCard = useTransform(p, [0.25, 0.31], [0, 1]);
-  const wfRest = useTransform(p, [0.31, 0.37], [0, 1]);
+  const wfFrame = useTransform(p, [0.14, 0.19], [0, 1]); // brand strip + intro
+  const wfPhoto = useTransform(p, [0.19, 0.25], [0, 1]); // the photograph
+  const wfStory = useTransform(p, [0.25, 0.31], [0, 1]); // headline column
+  const wfRest = useTransform(p, [0.31, 0.37], [0, 1]); // detail lines + next section
   const wfOut = useTransform(p, [0.52, 0.62], [1, 0]);
 
   const greyIn = useTransform(p, [0.48, 0.6], [0, 1]);
@@ -83,14 +83,14 @@ export default function ProjectTimelapse() {
         <div className="mt-12 overflow-hidden rounded-lg border border-hairline bg-slate">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/work/reva-diagnostics.jpg"
-            alt="Reva Diagnostics — the shipped site"
+            src="/work/we2-interiors.jpg"
+            alt="we2 Interiors — the shipped site"
             className="w-full"
             loading="lazy"
           />
         </div>
         <p className="mono-s mt-4 text-ash">
-          Reva Diagnostics — brief to live in six weeks.
+          we2 Interiors — from brief to live, scene by scene.
         </p>
       </section>
     );
@@ -127,10 +127,10 @@ export default function ProjectTimelapse() {
               </span>
               <span className="relative mx-auto grid h-6 w-56 place-items-center overflow-hidden rounded-md bg-night text-center">
                 <motion.span style={{ opacity: urlDraft }} className="mono-s absolute text-[0.62rem] text-ash">
-                  reva — wireframe.fig
+                  we2 — wireframe.fig
                 </motion.span>
                 <motion.span style={{ opacity: urlLive }} className="mono-s absolute text-[0.62rem] text-corona-soft">
-                  revadiagnostics.com
+                  we2interiors.com
                 </motion.span>
               </span>
               <span className="w-10" />
@@ -142,7 +142,7 @@ export default function ProjectTimelapse() {
               <motion.div style={{ opacity: greyIn }} className="absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/work/reva-diagnostics.jpg"
+                  src="/work/we2-interiors.jpg"
                   alt=""
                   aria-hidden
                   className="h-full w-full object-cover object-top opacity-70 grayscale"
@@ -154,8 +154,8 @@ export default function ProjectTimelapse() {
               <motion.div style={{ clipPath: clip }} className="absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/work/reva-diagnostics.jpg"
-                  alt="Reva Diagnostics — the live site"
+                  src="/work/we2-interiors.jpg"
+                  alt="we2 Interiors — the live site"
                   className="h-full w-full object-cover object-top"
                 />
               </motion.div>
@@ -169,7 +169,7 @@ export default function ProjectTimelapse() {
                 <div className="h-full w-px bg-corona-soft shadow-[0_0_24px_4px_rgba(255,139,61,0.65)]" />
               </motion.div>
 
-              {/* SCENE 2: the wireframe skeleton (matches the real layout) */}
+              {/* SCENE 2: the wireframe skeleton (matches we2's editorial layout) */}
               <motion.div style={{ opacity: wfOut }} className="absolute inset-0">
                 <svg
                   viewBox="0 0 800 500"
@@ -178,34 +178,32 @@ export default function ProjectTimelapse() {
                   aria-hidden
                 >
                   <g stroke="rgba(234,232,227,0.5)" fill="none" strokeWidth="1.5">
-                    <motion.g style={{ opacity: wfNav }}>
-                      <rect x="0" y="0" width="800" height="44" />
-                      <rect x="28" y="14" width="70" height="16" rx="3" />
-                      {[220, 290, 360, 430, 500, 570].map((x) => (
-                        <line key={x} x1={x} y1="22" x2={x + 44} y2="22" />
-                      ))}
-                      <rect x="680" y="10" width="92" height="24" rx="12" />
+                    {/* brand strip + intro paragraph, top */}
+                    <motion.g style={{ opacity: wfFrame }}>
+                      <rect x="0" y="0" width="72" height="6" fill="rgba(255,139,61,0.5)" stroke="none" />
+                      <line x1="497" y1="57" x2="707" y2="57" />
+                      <line x1="497" y1="70" x2="690" y2="70" />
                     </motion.g>
-                    <motion.g style={{ opacity: wfHead }}>
-                      <rect x="56" y="96" width="150" height="10" rx="2" />
-                      <rect x="56" y="126" width="280" height="34" rx="4" />
-                      <rect x="56" y="172" width="310" height="34" rx="4" />
-                      <rect x="56" y="218" width="250" height="34" rx="4" />
+                    {/* the photograph */}
+                    <motion.g style={{ opacity: wfPhoto }}>
+                      <rect x="89" y="123" width="409" height="255" />
+                      <line x1="89" y1="123" x2="498" y2="378" />
+                      <line x1="498" y1="123" x2="89" y2="378" />
+                      <rect x="99" y="352" width="18" height="10" />
                     </motion.g>
-                    <motion.g style={{ opacity: wfCard }}>
-                      <rect x="470" y="96" width="280" height="300" rx="10" />
-                      <polyline points="500,210 560,210 580,170 600,245 620,196 640,210 720,210" stroke="rgba(255,139,61,0.75)" />
-                      <rect x="495" y="280" width="110" height="42" rx="6" />
-                      <rect x="620" y="280" width="110" height="42" rx="6" />
-                      <rect x="495" y="336" width="110" height="42" rx="6" />
-                      <rect x="620" y="336" width="110" height="42" rx="6" />
+                    {/* headline column, right */}
+                    <motion.g style={{ opacity: wfStory }}>
+                      <rect x="524" y="176" width="123" height="6" rx="2" fill="rgba(255,139,61,0.4)" stroke="none" />
+                      <rect x="524" y="196" width="132" height="24" rx="3" />
+                      <rect x="524" y="228" width="150" height="24" rx="3" />
                     </motion.g>
+                    {/* detail lines + the next section peeking in */}
                     <motion.g style={{ opacity: wfRest }}>
-                      {[280, 300, 320].map((y) => (
-                        <line key={y} x1="56" y1={y} x2="400" y2={y} />
-                      ))}
-                      <rect x="56" y="352" width="130" height="36" rx="18" />
-                      <rect x="202" y="352" width="130" height="36" rx="18" />
+                      <line x1="524" y1="266" x2="706" y2="266" />
+                      <line x1="524" y1="278" x2="706" y2="278" />
+                      <line x1="524" y1="290" x2="668" y2="290" />
+                      <rect x="524" y="310" width="82" height="7" rx="2" />
+                      <rect x="302" y="470" width="409" height="30" />
                     </motion.g>
                   </g>
                 </svg>
@@ -217,10 +215,10 @@ export default function ProjectTimelapse() {
                 className="absolute inset-0 grid place-items-center bg-night px-8"
               >
                 <div className="max-w-md text-center">
-                  <p className="mono-s text-corona-soft/90">reva/brief.txt</p>
+                  <p className="mono-s text-corona-soft/90">we2/brief.txt</p>
                   <p className="serif-i mt-5 text-xl leading-relaxed text-moon/90 md:text-2xl">
-                    &ldquo;Give a medical-supply company a digital front door
-                    that institutional buyers trust.&rdquo;
+                    &ldquo;Give an interior studio a digital home as quiet and
+                    premium as its rooms.&rdquo;
                   </p>
                 </div>
               </motion.div>
