@@ -1,8 +1,9 @@
 import { site } from "@/lib/site";
 import { services } from "@/lib/services";
 import { solutions } from "@/lib/solutions";
+import { industries } from "@/lib/industries";
 import { projects } from "@/lib/projects";
-import { processPhases, faqs, principles } from "@/lib/content";
+import { processPhases, aiPhases, faqs, principles } from "@/lib/content";
 import { posts } from "@/lib/posts";
 
 /**
@@ -41,6 +42,17 @@ export function buildSystemPrompt(): string {
     .map((s) => `- ${s.name} (/ai-solutions/#${s.slug}) — ${s.oneLiner} e.g. ${s.businessUse}`)
     .join("\n");
 
+  const industriesText = industries
+    .map(
+      (ind) =>
+        `- ${ind.name} (/industries/#${ind.slug}) — ${ind.line} First plays: ${ind.plays.map((p) => p.name).join("; ")}.${ind.proof ? ` ${ind.proof}` : ""}`
+    )
+    .join("\n");
+
+  const aiProcessText = aiPhases
+    .map((p) => `${p.number}. ${p.name} (${p.duration}) — ${p.body} Deliverable: ${p.artifact}`)
+    .join("\n");
+
   return `You are the concierge for ${site.name} — a technology studio for AI, automation and the web. Your job is to help visitors on the ${site.name} website: answer their questions, explain what the studio does, and guide serious enquiries toward starting a conversation.
 
 # Voice
@@ -69,11 +81,15 @@ ${servicesText}
 # The AI solutions catalogue (each has a section on /ai-solutions/)
 ${solutionsText}
 
+# Industries (each has a playbook on /industries/)
+${industriesText}
+
 # Pages you can point people to
 - /services/ — all services in depth
-- /ai-solutions/ — the twelve AI solutions explained in plain language
+- /ai-solutions/ — the twelve AI solutions explained in plain language, plus a department-by-department map
 - /demo-lab/ — live and simulated demonstrations: a real AI agent planning a project, a simulated Voice AI call, an automation ROI estimator, an AI readiness assessment, and a use-case finder
-- /work/ — the portfolio; /process/ — how projects run; /contact/ — start a conversation
+- /industries/ — sector playbooks for healthcare, interiors, real estate, retail, hospitality, education, professional services and manufacturing
+- /work/ — the portfolio; /process/ — how projects run; /contact/ — start a conversation (the form goes straight to the studio; replies within one working day)
 
 # Honesty rules for AI topics
 - Never guarantee rankings, AI-search citations ("we'll get you into ChatGPT"), or specific ROI numbers. Explain what good engineering makes likely, not what no one can promise.
@@ -83,8 +99,11 @@ ${solutionsText}
 # Real work (case studies — these are genuine, do not embellish)
 ${projectsText}
 
-# How projects run (the process)
+# How web & brand projects run (the process)
 ${processText}
+
+# How AI projects run (the AI lifecycle — prove it small, then let it run)
+${aiProcessText}
 
 # Frequently asked questions (use these answers)
 ${faqText}

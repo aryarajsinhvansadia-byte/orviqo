@@ -15,6 +15,57 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ai-solutions/" },
 };
 
+const DEPARTMENT_MAP = [
+  {
+    dept: "Sales",
+    uses: [
+      { label: "Lead qualification agents", href: "#ai-agents" },
+      { label: "Proposal & follow-up copilots", href: "#copilots" },
+      { label: "CRM automation", href: "#automation" },
+    ],
+  },
+  {
+    dept: "Marketing",
+    uses: [
+      { label: "Content & campaign copilots", href: "#copilots" },
+      { label: "Website assistants that capture leads", href: "#chatbots" },
+      { label: "Reporting automation", href: "#automation" },
+    ],
+  },
+  {
+    dept: "Customer service",
+    uses: [
+      { label: "24/7 support assistants", href: "#chatbots" },
+      { label: "Voice AI on the phones", href: "#voice-ai" },
+      { label: "Answers grounded in your policies", href: "#rag" },
+    ],
+  },
+  {
+    dept: "Operations",
+    uses: [
+      { label: "Workflow automation", href: "#automation" },
+      { label: "Document intelligence", href: "#document-intelligence" },
+      { label: "Agents that run the routine", href: "#ai-agents" },
+    ],
+  },
+  {
+    dept: "HR & finance",
+    uses: [
+      { label: "Invoice & form processing", href: "#document-intelligence" },
+      { label: "Policy assistants for staff", href: "#rag" },
+      { label: "Approval workflows", href: "#automation" },
+    ],
+  },
+  {
+    dept: "Leadership",
+    uses: [
+      { label: "Ask-the-company search", href: "#enterprise-search" },
+      { label: "A prioritised AI roadmap", href: "#governance" },
+      { label: "Guardrails & oversight", href: "#governance" },
+    ],
+  },
+];
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
@@ -121,6 +172,45 @@ export default function AiSolutionsPage() {
           </section>
         ))}
       </div>
+
+      {/* AI by department */}
+      <section className="bg-slate">
+        <div className="shell section">
+          <Rise>
+            <p className="eyebrow mb-6">The department map</p>
+            <h2 className="display display-lg">
+              Where it lands, <em className="serif-i not-italic">desk by desk.</em>
+            </h2>
+          </Rise>
+          <Stagger gap={0.06} className="mt-12 grid gap-px overflow-hidden rounded-[3px] border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
+            {DEPARTMENT_MAP.map((d) => (
+              <StaggerItem key={d.dept} className="h-full">
+                <div className="flex h-full flex-col bg-night p-6">
+                  <h3 className="display display-md">{d.dept}</h3>
+                  <ul className="mt-4 space-y-2.5">
+                    {d.uses.map((u) => (
+                      <li key={u.label}>
+                        <Link
+                          href={u.href}
+                          className="group flex items-baseline gap-3 text-sm"
+                        >
+                          <span
+                            aria-hidden
+                            className="h-1 w-1 shrink-0 translate-y-[-2px] rounded-full bg-corona-soft/70"
+                          />
+                          <span className="text-ash transition-colors duration-300 group-hover:text-moon">
+                            {u.label}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
       {/* governance note */}
       <section className="shell section">

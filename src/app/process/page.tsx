@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Button from "@/components/Button";
-import { Rise } from "@/components/motion";
-import { processPhases } from "@/lib/content";
+import SectionHead from "@/components/SectionHead";
+import FlowDiagram from "@/components/FlowDiagram";
+import { Rise, Stagger, StaggerItem } from "@/components/motion";
+import { processPhases, aiPhases } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Process",
   description:
-    "The ORVIQO method: five phases from listening to launch to the long, quiet work of getting better every month. Nine weeks, no surprises.",
+    "How ORVIQO works: five phases for web and brand builds, and a five-phase AI lifecycle — assess, prioritise, pilot, integrate, govern. No surprises either way.",
   alternates: { canonical: "/process/" },
 };
 
@@ -63,6 +65,42 @@ export default function ProcessPage() {
           </section>
         ))}
       </div>
+
+      {/* the AI lifecycle */}
+      <section className="border-t border-hairline bg-slate">
+        <div className="shell section">
+          <SectionHead
+            eyebrow="AI projects run differently"
+            title={
+              <>
+                Prove it small. <em className="serif-i not-italic">Then let it run.</em>
+              </>
+            }
+          />
+          <Rise delay={0.08}>
+            <p className="mt-6 max-w-xl text-ash">
+              Websites are built once and refined. AI systems are proven first,
+              trusted second, scaled third — so the lifecycle bends toward
+              evidence: no big-bang builds, no demos that die in a drawer.
+            </p>
+            <FlowDiagram
+              steps={["Assess", "Prioritise", "Pilot", "Integrate", "Govern"]}
+              className="mt-8"
+            />
+          </Rise>
+          <Stagger gap={0.07} className="mt-14 grid gap-10 border-t border-hairline pt-12 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
+            {aiPhases.map((phase) => (
+              <StaggerItem key={phase.number}>
+                <p className="mono-s text-corona-soft/80">{phase.number}</p>
+                <h3 className="display display-md mt-2">{phase.name}</h3>
+                <p className="mono-s mt-1 text-ash">{phase.duration}</p>
+                <p className="mt-4 text-sm text-ash">{phase.body}</p>
+                <p className="mono-s mt-4 text-corona-soft/90">{phase.artifact}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
       <section className="shell section text-center">
         <Rise>

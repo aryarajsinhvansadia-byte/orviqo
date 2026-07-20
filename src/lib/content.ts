@@ -20,6 +20,44 @@ export const principles = [
   },
 ];
 
+export const aiPhases = [
+  {
+    number: "01",
+    name: "Assess",
+    duration: "Week 1",
+    body: "We map how the work actually flows — where hours leak, where enquiries die, where knowledge hides. No AI talk yet; just an honest audit of the operation.",
+    artifact: "An AI opportunity map of your business.",
+  },
+  {
+    number: "02",
+    name: "Prioritise",
+    duration: "Week 1–2",
+    body: "Every candidate use case is scored on payback and feasibility. Most lose. The one or two that win get a scope, a success metric and a budget — before anything is built.",
+    artifact: "A ranked roadmap with ROI logic you can challenge.",
+  },
+  {
+    number: "03",
+    name: "Pilot",
+    duration: "Week 2–5",
+    body: "The smallest system that proves the value — a working assistant, agent or automation on your real data, measured against the metric we agreed. If it doesn't earn its keep, we say so.",
+    artifact: "A working pilot, measured honestly.",
+  },
+  {
+    number: "04",
+    name: "Integrate",
+    duration: "Week 5–8",
+    body: "The pilot becomes infrastructure: wired into your CRM, tools and data, with role-based access, human approvals where they matter, and your team trained to trust it.",
+    artifact: "A production system your team actually uses.",
+  },
+  {
+    number: "05",
+    name: "Govern",
+    duration: "Ongoing",
+    body: "AI systems drift; good ones are watched. Logging, monitoring, guardrail reviews and monthly reports on what the system did, what it cost and what it saved.",
+    artifact: "Oversight, and numbers that stay honest.",
+  },
+];
+
 export const processPhases = [
   {
     number: "01",

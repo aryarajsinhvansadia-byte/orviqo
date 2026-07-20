@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "services",
     "ai-solutions",
     "demo-lab",
+    "industries",
     "work",
     "case-studies",
     "process",

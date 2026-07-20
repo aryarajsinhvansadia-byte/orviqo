@@ -29,6 +29,7 @@ export const nav = {
     { label: "Services", href: "/services/", hint: "the craft" },
     { label: "AI Solutions", href: "/ai-solutions/", hint: "the intelligence" },
     { label: "Demo Lab", href: "/demo-lab/", hint: "the playground" },
+    { label: "Industries", href: "/industries/", hint: "the fit" },
     { label: "Studio", href: "/about/", hint: "the people" },
     { label: "Process", href: "/process/", hint: "the method" },
     { label: "Journal", href: "/journal/", hint: "the thinking" },
@@ -40,6 +41,7 @@ export const nav = {
       { label: "Services", href: "/services/" },
       { label: "AI Solutions", href: "/ai-solutions/" },
       { label: "Demo Lab", href: "/demo-lab/" },
+      { label: "Industries", href: "/industries/" },
     ],
     studio: [
       { label: "About", href: "/about/" },
