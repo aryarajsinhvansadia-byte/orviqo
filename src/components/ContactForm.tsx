@@ -10,6 +10,12 @@ const inputCls =
 
 type Status = "idle" | "sending" | "sent" | "error";
 
+// FormSubmit inbox alias (public by design — it exists to keep the real
+// address out of the code). Submissions must come from the visitor's
+// browser: FormSubmit silently discards posts from datacenter IPs, so
+// never move this call server-side.
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/4869341b38731a7c6ce12cb7d5d553e3";
+
 export default function ContactForm() {
   const [budget, setBudget] = useState<string>("");
   const [status, setStatus] = useState<Status>("idle");
@@ -19,25 +25,37 @@ export default function ContactForm() {
     e.preventDefault();
     if (status === "sending") return;
     const data = new FormData(e.currentTarget);
-    const payload = {
-      name: data.get("name"),
-      company: data.get("company"),
-      email: data.get("email"),
-      budget,
-      message: data.get("message"),
-      website: data.get("website"),
-      page: window.location.pathname,
-    };
+    const name = String(data.get("name") ?? "").trim();
+    const company = String(data.get("company") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+
+    // Honeypot: bots fill it, humans never see it. Pretend success.
+    if (String(data.get("website") ?? "").trim()) {
+      setStatus("sent");
+      return;
+    }
 
     setStatus("sending");
     try {
-      const res = await fetch("/api/contact/", {
+      const res = await fetch(FORM_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `ORVIQO enquiry — ${company || name}`,
+          _template: "table",
+          _captcha: "false",
+          _replyto: email,
+          Name: name,
+          Company: company || "—",
+          Email: email,
+          Budget: budget || "Not specified",
+          Message: message,
+          Page: window.location.pathname,
+        }),
       });
-      const json = (await res.json().catch(() => null)) as { ok?: boolean } | null;
-      if (res.ok && json?.ok) {
+      const json = (await res.json().catch(() => null)) as { success?: string | boolean } | null;
+      if (res.ok && String(json?.success).toLowerCase() !== "false") {
         setStatus("sent");
         return;
       }
@@ -45,9 +63,9 @@ export default function ContactForm() {
     } catch {
       // Never dead-end a lead: offer a prefilled email instead.
       const body = encodeURIComponent(
-        `Name: ${payload.name}\nCompany: ${payload.company}\nEmail: ${payload.email}\nBudget: ${budget || "Not specified"}\n\n${payload.message}`
+        `Name: ${name}\nCompany: ${company}\nEmail: ${email}\nBudget: ${budget || "Not specified"}\n\n${message}`
       );
-      const subject = encodeURIComponent(`New project — ${payload.company || payload.name}`);
+      const subject = encodeURIComponent(`New project — ${company || name}`);
       setFallbackHref(`mailto:${site.email}?subject=${subject}&body=${body}`);
       setStatus("error");
     }
