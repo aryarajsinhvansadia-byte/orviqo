@@ -42,8 +42,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // FormSubmit validates Origin/Referer; forward the real serving origin.
-    const origin = req.nextUrl.origin;
+    // FormSubmit validates Origin/Referer; forward the real public origin.
+    // (req.nextUrl.origin is the internal localhost on Vercel, so use the
+    // forwarded headers instead.)
+    const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
+    const proto = req.headers.get("x-forwarded-proto") || "https";
+    const origin = host ? `${proto}://${host}` : "https://orviqo.com";
     const res = await fetch(`https://formsubmit.co/ajax/${TO_EMAIL}`, {
       method: "POST",
       headers: {
