@@ -9,7 +9,9 @@ export const maxDuration = 15;
  * stored data). If forwarding fails the client falls back to a prefilled
  * mailto — the form never dead-ends.
  */
-const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "aryarajsinhvansadia@gmail.com";
+// FormSubmit alias for the studio inbox (activated for this domain);
+// override with CONTACT_TO_EMAIL if the destination ever changes.
+const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "4869341b38731a7c6ce12cb7d5d553e3";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function clean(v: unknown, max: number): string {
