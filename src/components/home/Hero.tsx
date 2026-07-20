@@ -70,8 +70,9 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 1.05, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-md text-lg text-ash"
           >
-            We design and engineer digital products, brands and AI systems for
-            companies building what comes next.
+            We build digital systems that think — websites, growth, automation
+            and AI, working as one practice for companies building what comes
+            next.
           </motion.p>
           <motion.div
             initial={reduced ? false : { opacity: 0, y: 20 }}

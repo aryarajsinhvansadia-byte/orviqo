@@ -121,8 +121,8 @@ export default function Nav() {
               variant="ember"
               className="absolute right-[12%] top-[18%] h-40 w-40 opacity-60 max-md:hidden"
             />
-            <div className="shell flex h-full flex-col justify-end pb-10 pt-28 md:justify-center md:pb-0">
-              <nav className="grid gap-x-16 md:grid-cols-[1fr_auto]">
+            <div className="shell flex h-full flex-col overflow-y-auto pb-10 pt-28 md:pb-0">
+              <nav className="mt-auto grid gap-x-16 md:my-auto md:grid-cols-[1fr_auto]">
                 <ul>
                   {nav.menu.map((item, i) => (
                     <li key={item.href} className="overflow-hidden">

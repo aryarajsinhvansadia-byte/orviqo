@@ -32,7 +32,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-hairline bg-night">
       <div className="shell pt-16 pb-10">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-4">
             <a
               href={`mailto:${site.email}`}
@@ -58,6 +58,7 @@ export default function Footer() {
               ))}
             </div>
           </div>
+          <Column title="Expertise" links={nav.footer.expertise} />
           <Column title="Studio" links={nav.footer.studio} />
           <Column title="Work" links={nav.footer.work} />
           <Column title="Legal" links={nav.footer.legal} />

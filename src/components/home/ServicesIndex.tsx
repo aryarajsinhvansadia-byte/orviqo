@@ -10,7 +10,7 @@ export default function ServicesIndex() {
         eyebrow="Services"
         title={
           <>
-            Five crafts. <em className="serif-i not-italic">One table.</em>
+            Eight crafts. <em className="serif-i not-italic">One table.</em>
           </>
         }
       />

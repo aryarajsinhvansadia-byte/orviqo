@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Hero from "@/components/home/Hero";
 import Manifesto from "@/components/home/Manifesto";
+import Pillars from "@/components/home/Pillars";
+import MaturityJourney from "@/components/home/MaturityJourney";
 import SelectedWork from "@/components/home/SelectedWork";
 import ProjectTimelapse from "@/components/home/ProjectTimelapse";
 import AgentTheatre from "@/components/home/AgentTheatre";
@@ -36,10 +38,12 @@ export default function Home() {
       <Hero />
       <Manifesto />
       <Marquee />
+      <Pillars />
       <SelectedWork />
       <ProjectTimelapse />
       <ServicesIndex />
       <AgentTheatre />
+      <MaturityJourney />
       <Standard />
       <ProcessTeaser />
       <Stack />

@@ -80,6 +80,14 @@ export const faqs = [
     a: "In your product: only where it removes real work — assistants, automation, search. In ours: as an accelerant for research and boilerplate, never as the designer. Every shipped pixel and paragraph passes human judgement.",
   },
   {
+    q: "We've never used AI. Where would we even start?",
+    a: "With a conversation, not a contract. We assess where your business actually loses time, shortlist one or two automations with clear payback, and prove them small before anything scales. Most companies start at a chatbot or a lead follow-up automation — not a moonshot. The free readiness check in our Demo Lab is a fair first step.",
+  },
+  {
+    q: "Can you guarantee we'll show up in ChatGPT and AI search?",
+    a: "No — and be wary of anyone who says yes. No agency controls what AI models cite. What we can do is engineer the conditions: clean structure, real authority, schema and content that machines can parse and trust. That's AEO and GEO done honestly — strong odds, never promises.",
+  },
+  {
     q: "What happens after launch?",
     a: "Every launch includes 30 days of care at no cost. After that, most clients move to a Continuous Care retainer — experiments, refinements and support on a monthly cadence. You always own your code, your content and your accounts.",
   },

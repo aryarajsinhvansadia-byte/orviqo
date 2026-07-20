@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Web experiences, AI solutions, brand identity, SEO and continuous care — five crafts practised by one senior team at ORVIQO.",
+    "Web & digital experiences, SEO & AI search, AI & agentic solutions, business automation, custom software, AI consulting, brand identity and continuous care — eight crafts practised by one senior team at ORVIQO.",
   alternates: { canonical: "/services/" },
 };
 
@@ -30,7 +30,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Services"
         lines={[
-          <span key="l1">Five crafts.</span>,
+          <span key="l1">Eight crafts.</span>,
           <span key="l2">
             <em className="serif-i not-italic">One table.</em>
           </span>,

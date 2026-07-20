@@ -3,7 +3,7 @@ export const site = {
   url: "https://orviqo.com",
   tagline: "The quiet kind of famous.",
   description:
-    "ORVIQO is an independent digital studio designing and engineering websites, brands, AI systems and search growth for ambitious companies worldwide.",
+    "ORVIQO builds intelligent digital systems — websites, SEO & AI search, business automation and AI agents — that help companies attract customers, automate operations and scale with AI.",
   email: "hello@orviqo.com",
   location: "Vadodara, India",
   timezone: "Asia/Kolkata",
@@ -19,6 +19,7 @@ export const nav = {
   primary: [
     { label: "Work", href: "/work/" },
     { label: "Services", href: "/services/" },
+    { label: "AI Solutions", href: "/ai-solutions/" },
     { label: "Studio", href: "/about/" },
     { label: "Journal", href: "/journal/" },
     { label: "Contact", href: "/contact/" },
@@ -26,6 +27,8 @@ export const nav = {
   menu: [
     { label: "Work", href: "/work/", hint: "the proof" },
     { label: "Services", href: "/services/", hint: "the craft" },
+    { label: "AI Solutions", href: "/ai-solutions/", hint: "the intelligence" },
+    { label: "Demo Lab", href: "/demo-lab/", hint: "the playground" },
     { label: "Studio", href: "/about/", hint: "the people" },
     { label: "Process", href: "/process/", hint: "the method" },
     { label: "Journal", href: "/journal/", hint: "the thinking" },
@@ -33,6 +36,11 @@ export const nav = {
     { label: "Contact", href: "/contact/", hint: "the beginning" },
   ],
   footer: {
+    expertise: [
+      { label: "Services", href: "/services/" },
+      { label: "AI Solutions", href: "/ai-solutions/" },
+      { label: "Demo Lab", href: "/demo-lab/" },
+    ],
     studio: [
       { label: "About", href: "/about/" },
       { label: "Process", href: "/process/" },

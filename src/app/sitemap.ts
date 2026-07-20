@@ -11,6 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "about",
     "services",
+    "ai-solutions",
+    "demo-lab",
     "work",
     "case-studies",
     "process",

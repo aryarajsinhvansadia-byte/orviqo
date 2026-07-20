@@ -6,13 +6,15 @@ import { Fragment } from "react";
  * (see the keyframe guard in globals.css).
  */
 const CAPABILITIES = [
-  "Product design",
+  "AI agents",
   "Next.js engineering",
-  "AI systems",
+  "Business automation",
+  "SEO & AI search",
+  "Voice AI",
+  "Product design",
+  "RAG & knowledge AI",
   "Brand identity",
-  "Design systems",
-  "Growth & SEO",
-  "Motion design",
+  "AI copilots",
   "Zero-to-one product",
 ];
 
