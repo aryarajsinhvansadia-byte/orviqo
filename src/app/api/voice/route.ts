@@ -62,6 +62,11 @@ export async function POST(req: Request) {
     .slice(-MAX_MESSAGES)
     .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_CHARS) }));
 
+  // The transcript opens with a scripted greeting, and trimming to the last N
+  // turns can also leave an assistant message first — either way the Messages
+  // API requires the conversation to start with the user.
+  while (cleaned.length > 0 && cleaned[0].role === "assistant") cleaned.shift();
+
   if (cleaned.length === 0 || cleaned[cleaned.length - 1].role !== "user") {
     return new Response("Bad request", { status: 400 });
   }
