@@ -6,7 +6,7 @@ import AgentTheatre from "@/components/home/AgentTheatre";
 import RoiCalculator from "@/components/demolab/RoiCalculator";
 import ReadinessQuiz from "@/components/demolab/ReadinessQuiz";
 import UseCaseFinder from "@/components/demolab/UseCaseFinder";
-import VoiceDemo from "@/components/demolab/VoiceDemo";
+import LiveVoiceAgent from "@/components/demolab/LiveVoiceAgent";
 import { Rise } from "@/components/motion";
 
 export const metadata: Metadata = {
@@ -51,7 +51,7 @@ export default function DemoLabPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
               <SectionHead
-                eyebrow="02 — Simulation"
+                eyebrow="02 — Live · speak to it"
                 title={
                   <>
                     A receptionist who never <em className="serif-i not-italic">misses a call.</em>
@@ -60,14 +60,14 @@ export default function DemoLabPage() {
               />
               <Rise delay={0.1}>
                 <p className="mt-6 max-w-md text-ash">
-                  Voice AI answers, qualifies, books and routes — politely, at
-                  any hour. Play the call to hear the conversation design;
-                  production systems connect to your real phone lines.
+                  Press start and talk. It listens, thinks on a real model, and
+                  answers out loud — the same conversation design we put on
+                  clients&apos; actual phone lines.
                 </p>
               </Rise>
             </div>
             <Rise delay={0.15}>
-              <VoiceDemo />
+              <LiveVoiceAgent />
             </Rise>
           </div>
         </div>
