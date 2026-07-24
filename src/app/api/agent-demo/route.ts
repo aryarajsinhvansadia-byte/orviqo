@@ -12,7 +12,7 @@ const SYSTEM = `You are ORVIQO's intake agent, demonstrated live on the studio's
 Rules:
 - Always call classify_brief first, then match_case_study, then estimate_timeline. One at a time.
 - Then write the final report, exactly this shape, under 110 words total:
-  a one-line read of what they need; then three short lines starting with "→ " (the approach, the relevant proof with the case-study name, the timeline band); then one closing line inviting them to hello@orviqo.com.
+  a one-line read of what they need; then three short lines starting with "→ " (the approach, the relevant proof with the case-study name, the timeline band); then one closing line inviting them to hello@orviqo.net.
 - Warm, precise, zero hype. No emoji. Never invent facts, clients, or prices — pricing is "scoped after one call".
 - If the brief is not a project brief (spam, gibberish, off-topic), skip the tools and reply in one gracious line inviting a real brief.`;
 
@@ -45,7 +45,7 @@ function replayStream(brief: string) {
     { type: "text", chunk: `→ Approach: design and engineering as one team, scoped around ${cls.needs[0]}.\n` },
     { type: "text", chunk: `→ Proof: see ${match.caseStudy} — ${match.whyRelevant}\n` },
     { type: "text", chunk: `→ Timeline: ${est.band}, across our five phases.\n` },
-    { type: "text", chunk: `Next: write to hello@orviqo.com and you'll have an honest read within a working day.` },
+    { type: "text", chunk: `Next: write to hello@orviqo.net and you'll have an honest read within a working day.` },
     { type: "done", live: false },
   ];
   return new ReadableStream({
@@ -128,7 +128,7 @@ export async function POST(req: Request) {
         console.error("agent-demo error", err);
         ndjson(controller, enc, {
           type: "text",
-          chunk: "The live agent hit turbulence — try again, or write to hello@orviqo.com.",
+          chunk: "The live agent hit turbulence — try again, or write to hello@orviqo.net.",
         });
         ndjson(controller, enc, { type: "done", live: true });
         controller.close();

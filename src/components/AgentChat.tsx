@@ -81,7 +81,7 @@ export default function AgentChat() {
           copy[copy.length - 1] = {
             role: "assistant",
             content:
-              "Sorry — I couldn't reach the studio's assistant just now. Please try again, or email hello@orviqo.com.",
+              "Sorry — I couldn't reach the studio's assistant just now. Please try again, or email hello@orviqo.net.",
           };
           return copy;
         });

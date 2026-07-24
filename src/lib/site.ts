@@ -1,10 +1,10 @@
 export const site = {
   name: "ORVIQO",
-  url: "https://orviqo.com",
+  url: "https://orviqo.net",
   tagline: "The quiet kind of famous.",
   description:
     "ORVIQO builds intelligent digital systems — websites, SEO & AI search, business automation and AI agents — that help companies attract customers, automate operations and scale with AI.",
-  email: "hello@orviqo.com",
+  email: "hello@orviqo.net",
   location: "Vadodara, India",
   timezone: "Asia/Kolkata",
   founded: "2024",

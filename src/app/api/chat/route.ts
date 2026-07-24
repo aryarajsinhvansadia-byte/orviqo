@@ -22,7 +22,7 @@ function fallback(text: string) {
 export async function POST(req: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return fallback(
-      "I'm just being switched on — the live assistant isn't connected yet. In the meantime, tell the studio what you're building at hello@orviqo.com or through the contact page, and you'll hear back within a working day."
+      "I'm just being switched on — the live assistant isn't connected yet. In the meantime, tell the studio what you're building at hello@orviqo.net or through the contact page, and you'll hear back within a working day."
     );
   }
 
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
         if (!already) {
           controller.enqueue(
             encoder.encode(
-              "\n\nSorry — something went wrong on my side. Please try again, or reach the studio directly at hello@orviqo.com."
+              "\n\nSorry — something went wrong on my side. Please try again, or reach the studio directly at hello@orviqo.net."
             )
           );
         }

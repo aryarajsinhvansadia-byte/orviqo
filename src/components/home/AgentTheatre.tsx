@@ -70,7 +70,7 @@ export default function AgentTheatre() {
     } catch {
       setEvents((e) => [
         ...e,
-        { type: "text", chunk: "Couldn't reach the agent — try again, or write to hello@orviqo.com." },
+        { type: "text", chunk: "Couldn't reach the agent — try again, or write to hello@orviqo.net." },
         { type: "done", live: false },
       ]);
     } finally {
