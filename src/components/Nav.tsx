@@ -73,7 +73,13 @@ export default function Nav() {
             />
             ORVIQO
           </Link>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6 md:gap-8">
+            <Link
+              href="/demo-lab/"
+              className="mono-s hidden underline-offset-4 hover:underline md:block"
+            >
+              Demo Lab
+            </Link>
             <Link
               href="/contact/"
               className="mono-s hidden underline-offset-4 hover:underline md:block"
