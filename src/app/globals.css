@@ -335,3 +335,62 @@ body::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- ORVIQO booking assistant (embedded n8n chat) ---------- */
+.orviqo-chat {
+  --chat--color-primary: #ff8b3d;
+  --chat--color-primary-shade-50: #f07f33;
+  --chat--color-primary-shade-100: #e0742c;
+  --chat--color-secondary: #ffd9a3;
+  --chat--color-white: #eae8e3;
+  --chat--color-light: #14141c;
+  --chat--color-light-shade-50: #1a1a24;
+  --chat--color-light-shade-100: #20202b;
+  --chat--color-medium: rgba(234, 232, 227, 0.18);
+  --chat--color-dark: #0a0a10;
+  --chat--color-disabled: #8f8e96;
+  --chat--color-typing: #8f8e96;
+
+  --chat--spacing: 1rem;
+  --chat--border-radius: 3px;
+  --chat--transition-duration: 0.2s;
+
+  --chat--window--width: 100%;
+  --chat--window--height: 100%;
+
+  --chat--header--background: #0a0a10;
+  --chat--header--color: #eae8e3;
+  --chat--header--padding: 0;
+  --chat--heading--font-size: 0;
+  --chat--subtitle--font-size: 0;
+
+  --chat--textarea--height: 3.25rem;
+  --chat--textarea--max-height: 8rem;
+
+  --chat--message--font-size: 0.95rem;
+  --chat--message--padding: 0.75rem 1rem;
+  --chat--message--border-radius: 4px;
+  --chat--message-line-height: 1.6;
+  --chat--message--bot--background: #14141c;
+  --chat--message--bot--color: #eae8e3;
+  --chat--message--bot--border: 1px solid rgba(234, 232, 227, 0.1);
+  --chat--message--user--background: #eae8e3;
+  --chat--message--user--color: #0a0a10;
+  --chat--message--user--border: none;
+  --chat--message--pre--background: rgba(10, 10, 16, 0.6);
+
+  --chat--toggle--background: #ff8b3d;
+  --chat--toggle--hover--background: #ffd9a3;
+  --chat--toggle--active--background: #e0742c;
+  --chat--toggle--color: #0a0a10;
+
+  background: rgba(10, 10, 16, 0.55);
+  backdrop-filter: blur(4px);
+}
+/* the widget draws its own header bar; ours lives on the page instead */
+.orviqo-chat .chat-header {
+  display: none;
+}
+.orviqo-chat .chat-layout {
+  background: transparent;
+}
