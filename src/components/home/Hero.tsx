@@ -81,8 +81,8 @@ export default function Hero() {
             className="flex flex-wrap gap-4"
           >
             <Button href="/contact/">Start a project</Button>
-            <Button href="/work/" variant="ghost">
-              See the work
+            <Button href="/demo-lab/" variant="ghost">
+              Try the AI
             </Button>
           </motion.div>
         </div>
