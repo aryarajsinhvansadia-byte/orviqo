@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Button from "@/components/Button";
 import { Rise } from "@/components/motion";
+import AppTimelapse from "@/components/AppTimelapse";
 import { services } from "@/lib/services";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Web & digital experiences, SEO & AI search, AI & agentic solutions, business automation, custom software, AI consulting, brand identity and continuous care — eight crafts practised by one senior team at ORVIQO.",
+    "Web & digital experiences, mobile apps, SEO & AI search, AI & agentic solutions, business automation, custom software, AI consulting, brand identity and continuous care — nine crafts practised by one senior team at ORVIQO.",
   alternates: { canonical: "/services/" },
 };
 
@@ -30,7 +31,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Services"
         lines={[
-          <span key="l1">Eight crafts.</span>,
+          <span key="l1">Nine crafts.</span>,
           <span key="l2">
             <em className="serif-i not-italic">One table.</em>
           </span>,
@@ -87,6 +88,8 @@ export default function ServicesPage() {
           </section>
         ))}
       </div>
+
+      <AppTimelapse />
 
       <section className="shell section text-center">
         <Rise>
