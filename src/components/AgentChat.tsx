@@ -9,6 +9,10 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/** The assistant that can actually book — the same brain that powers /talk. */
+const BOOKING_URL =
+  "https://orviqo.app.n8n.cloud/webhook/0e614cff-6c48-46e3-a8bf-6906d718c326/chat";
+
 export default function AgentChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
@@ -20,6 +24,10 @@ export default function AgentChat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  // One conversation per visitor, so the assistant remembers the thread.
+  const sessionId = useRef(
+    `orviqo-web-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+  );
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -50,41 +58,66 @@ export default function AgentChat() {
     const controller = new AbortController();
     abortRef.current = controller;
 
+    const setReply = (content: string) =>
+      setMessages((m) => {
+        const copy = [...m];
+        copy[copy.length - 1] = { role: "assistant", content };
+        return copy;
+      });
+
     try {
-      const res = await fetch("/api/chat/", {
+      // The booking brain: same assistant as /talk, so it can actually put a
+      // consultation in the calendar rather than sending people elsewhere.
+      const booking = await fetch(BOOKING_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({
+          action: "sendMessage",
+          sessionId: sessionId.current,
+          chatInput: q,
+        }),
         signal: controller.signal,
       });
-      if (!res.ok || !res.body) throw new Error("no stream");
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        setMessages((m) => {
-          const copy = [...m];
-          copy[copy.length - 1] = {
-            role: "assistant",
-            content: copy[copy.length - 1].content + chunk,
-          };
-          return copy;
-        });
+      const data = (await booking.json().catch(() => null)) as { output?: string } | null;
+      const reply = data?.output?.trim();
+      if (!reply) throw new Error("no reply");
+      setReply(reply);
+    } catch (bookingErr) {
+      if ((bookingErr as Error).name === "AbortError") {
+        setBusy(false);
+        return;
       }
-    } catch (err) {
-      if ((err as Error).name !== "AbortError") {
-        setMessages((m) => {
-          const copy = [...m];
-          copy[copy.length - 1] = {
-            role: "assistant",
-            content:
-              "Sorry — I couldn't reach the studio's assistant just now. Please try again, or email hello@orviqo.net.",
-          };
-          return copy;
+      // Fall back to the site's own assistant so the widget never dies.
+      try {
+        const res = await fetch("/api/chat/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: next }),
+          signal: controller.signal,
         });
+        if (!res.ok || !res.body) throw new Error("no stream");
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          setMessages((m) => {
+            const copy = [...m];
+            copy[copy.length - 1] = {
+              role: "assistant",
+              content: copy[copy.length - 1].content + chunk,
+            };
+            return copy;
+          });
+        }
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          setReply(
+            "Sorry — I couldn't reach the studio's assistant just now. Please try again, or email hello@orviqo.net."
+          );
+        }
       }
     } finally {
       setBusy(false);
