@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo, Instrument_Serif, Fragment_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -8,6 +8,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import AgentChat from "@/components/AgentChat";
 import LivingBackground from "@/components/LivingBackground";
+import InstallApp from "@/components/InstallApp";
 import { site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -68,6 +69,28 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "ORVIQO",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a10",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 const orgJsonLd = {
@@ -136,6 +159,7 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <AgentChat />
+        <InstallApp />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
