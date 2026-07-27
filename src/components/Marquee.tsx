@@ -10,6 +10,7 @@ const CAPABILITIES = [
   "Next.js engineering",
   "Business automation",
   "SEO & AI search",
+  "iOS & Android apps",
   "Voice AI",
   "Product design",
   "RAG & knowledge AI",

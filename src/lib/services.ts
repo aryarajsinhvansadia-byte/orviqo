@@ -31,6 +31,27 @@ export const services: Service[] = [
     tags: ["Design", "Next.js", "AI-powered", "Commerce", "Cloud"],
   },
   {
+    slug: "mobile-apps",
+    name: "Mobile Apps",
+    line: "Your business, on the home screen.",
+    summary:
+      "iOS and Android apps for businesses that want to live in a customer's pocket — not just be found once and forgotten.",
+    detail: [
+      "A website is where people find you. An app is where they come back to you. For clinics taking bookings, restaurants taking orders, or any business with customers who return, that difference is the whole point.",
+      "We build once and ship to both stores — the same app on iPhone and Android, so you're not paying twice. Where an app would be overkill, we say so and build an installable web app instead: it goes on the home screen, works offline, and costs nothing in store fees.",
+    ],
+    deliverables: [
+      "iOS & Android apps, built once for both",
+      "Installable web apps (PWA) — no store fees",
+      "Booking, ordering & customer-account apps",
+      "Push notifications & offline support",
+      "AI built in — assistants, voice, automation",
+      "App Store & Google Play submission",
+      "Updates, monitoring & ongoing care",
+    ],
+    tags: ["iOS", "Android", "PWA", "Push", "Offline"],
+  },
+  {
     slug: "seo-ai-search",
     name: "SEO & AI Search",
     line: "Found by people. Cited by machines.",
