@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import AgentChat from "@/components/AgentChat";
 import LivingBackground from "@/components/LivingBackground";
 import InstallApp from "@/components/InstallApp";
+import AppFeatures from "@/components/AppFeatures";
 import { site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -160,6 +161,7 @@ export default function RootLayout({
         <Footer />
         <AgentChat />
         <InstallApp />
+        <AppFeatures />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
