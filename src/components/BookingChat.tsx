@@ -1,9 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  DEFAULT_LANG,
+  VOICE_LANGS,
+  pickVoice,
+  withDirective,
+  type LangCode,
+  type VoiceLang,
+} from "@/lib/voice-langs";
+import { createSpeaker, getRecognitionCtor, type Recognition } from "@/lib/speech";
+import { getSessionId, resetSessionId } from "@/lib/session";
 
 /**
- * ORVIQO's booking assistant — type or talk.
+ * ORVIQO's booking assistant — type or talk, in four languages.
  *
  * The thinking happens in the n8n workflow (which owns the calendar, the
  * lead table and the email alert); this is just a brand-native front end
@@ -12,52 +22,30 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const WEBHOOK_URL =
   "https://orviqo.app.n8n.cloud/webhook/0e614cff-6c48-46e3-a8bf-6906d718c326/chat";
 
-/* --- minimal Web Speech typings (not in the standard TS lib) --- */
-type SRAlternative = { transcript: string };
-type SRResult = { isFinal: boolean; 0: SRAlternative };
-type SREvent = { resultIndex: number; results: { length: number; [i: number]: SRResult } };
-type Recognition = {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  start: () => void;
-  stop: () => void;
-  abort: () => void;
-  onresult: ((e: SREvent) => void) | null;
-  onerror: ((e: { error: string }) => void) | null;
-  onend: (() => void) | null;
-};
-type RecognitionCtor = new () => Recognition;
-
-function getRecognitionCtor(): RecognitionCtor | null {
-  if (typeof window === "undefined") return null;
-  const w = window as unknown as {
-    SpeechRecognition?: RecognitionCtor;
-    webkitSpeechRecognition?: RecognitionCtor;
-  };
-  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
-}
-
 type Turn = { role: "user" | "assistant"; text: string };
 
-const OPENER =
-  "Hello — I'm ORVIQO's assistant. Tell me about your business and what you'd like to build, and I can book you a free consultation right here.";
-
 export default function BookingChat() {
-  const [turns, setTurns] = useState<Turn[]>([{ role: "assistant", text: OPENER }]);
+  const [lang, setLang] = useState<VoiceLang>(DEFAULT_LANG);
+  const [turns, setTurns] = useState<Turn[]>([
+    { role: "assistant", text: DEFAULT_LANG.greeting },
+  ]);
   const [draft, setDraft] = useState("");
   const [thinking, setThinking] = useState(false);
   const [listening, setListening] = useState(false);
   const [speakReplies, setSpeakReplies] = useState(false);
   const [micSupported, setMicSupported] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  /** Does the device itself have a voice for this script? */
+  const [hasBrowserVoice, setHasBrowserVoice] = useState(true);
+  /** Latched once we learn the studio voice isn't configured. */
+  const [serverVoiceOff, setServerVoiceOff] = useState(false);
+  // Silent only when neither source can speak this language.
+  const canSpeak = hasBrowserVoice || !serverVoiceOff;
 
-  const sessionId = useRef(
-    `orviqo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
-  );
   const recognition = useRef<Recognition | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const voice = useRef<SpeechSynthesisVoice | null>(null);
+  const speaker = useRef(createSpeaker());
 
   useEffect(() => setMicSupported(getRecognitionCtor() !== null), []);
 
@@ -65,33 +53,32 @@ export default function BookingChat() {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
   }, [turns, thinking]);
 
-  /* pick a decent English voice once they're loaded */
+  /* Re-pick the voice whenever the language changes or voices finish loading. */
   useEffect(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     const choose = () => {
       const all = window.speechSynthesis.getVoices();
-      if (!all.length) return;
-      const wanted = [/Google UK English Female/i, /Samantha/i, /Google US English/i, /en-IN/i];
-      for (const re of wanted) {
-        const hit = all.find((v) => re.test(v.name) || re.test(v.lang));
-        if (hit) return (voice.current = hit);
-      }
-      voice.current = all.find((v) => v.lang.startsWith("en")) ?? all[0];
+      if (!all.length) return; // still loading — voiceschanged will fire
+      const hit = pickVoice(lang, all);
+      voice.current = hit;
+      setHasBrowserVoice(hit !== null);
     };
     choose();
     window.speechSynthesis.addEventListener("voiceschanged", choose);
     return () => window.speechSynthesis.removeEventListener("voiceschanged", choose);
-  }, []);
+  }, [lang]);
 
-  const speak = useCallback((text: string) => {
-    if (typeof window === "undefined" || !window.speechSynthesis) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    if (voice.current) u.voice = voice.current;
-    u.rate = 1.02;
-    window.speechSynthesis.speak(u);
-  }, []);
+  const speak = useCallback(
+    async (text: string) => {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      speaker.current.cancel();
+      await speaker.current.play(text, lang, voice.current);
+      // After the first attempt we know whether the studio voice exists.
+      if (speaker.current.serverOk() === false) setServerVoiceOff(true);
+    },
+    [lang]
+  );
 
   const send = useCallback(
     async (text: string) => {
@@ -107,8 +94,8 @@ export default function BookingChat() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             action: "sendMessage",
-            sessionId: sessionId.current,
-            chatInput: message,
+            sessionId: getSessionId(),
+            chatInput: withDirective(message, lang),
           }),
         });
         const data = (await res.json().catch(() => null)) as { output?: string } | null;
@@ -129,7 +116,7 @@ export default function BookingChat() {
         setThinking(false);
       }
     },
-    [thinking, speakReplies, speak]
+    [thinking, speakReplies, speak, lang]
   );
 
   const startListening = useCallback(() => {
@@ -139,7 +126,7 @@ export default function BookingChat() {
       recognition.current?.abort();
     } catch {}
     const rec = new Ctor();
-    rec.lang = "en-IN";
+    rec.lang = lang.stt;
     rec.continuous = false;
     rec.interimResults = true;
     let finalText = "";
@@ -170,7 +157,24 @@ export default function BookingChat() {
       rec.start();
       setListening(true);
     } catch {}
-  }, [send]);
+  }, [send, lang]);
+
+  /** Switching language resets the thread so the greeting matches. */
+  function switchLang(code: LangCode) {
+    const next = VOICE_LANGS.find((l) => l.code === code) ?? DEFAULT_LANG;
+    if (next.code === lang.code) return;
+    try {
+      recognition.current?.abort();
+    } catch {}
+    speaker.current.cancel();
+    setListening(false);
+    setNotice(null);
+    setLang(next);
+    setDraft("");
+    setTurns([{ role: "assistant", text: next.greeting }]);
+    // A fresh session so the agent doesn't carry the old language over.
+    resetSessionId();
+  }
 
   function toggleMic() {
     if (listening) {
@@ -183,15 +187,15 @@ export default function BookingChat() {
     }
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    const sp = speaker.current;
+    return () => {
       try {
         recognition.current?.abort();
       } catch {}
-      if (typeof window !== "undefined") window.speechSynthesis?.cancel();
-    },
-    []
-  );
+      sp.cancel();
+    };
+  }, []);
 
   return (
     <div className="mx-auto flex h-[62vh] min-h-[460px] max-w-2xl flex-col overflow-hidden rounded-[4px] border border-hairline bg-night/60 backdrop-blur-sm">
@@ -219,17 +223,39 @@ export default function BookingChat() {
           onClick={() => {
             const next = !speakReplies;
             setSpeakReplies(next);
-            if (!next && typeof window !== "undefined") window.speechSynthesis?.cancel();
+            if (!next) speaker.current.cancel();
           }}
           aria-pressed={speakReplies}
-          className={`mono-s rounded-full border px-3 py-1 transition-colors ${
-            speakReplies
+          disabled={!canSpeak}
+          title={canSpeak ? undefined : "This device has no voice for this language"}
+          className={`mono-s rounded-full border px-3 py-1 transition-colors disabled:opacity-40 ${
+            speakReplies && canSpeak
               ? "border-corona-soft/60 text-moon light-rim"
               : "border-hairline text-ash hover:border-moon/30 hover:text-moon"
           }`}
         >
-          {speakReplies ? "Voice on" : "Voice off"}
+          {speakReplies && canSpeak ? "Voice on" : "Voice off"}
         </button>
+      </div>
+
+      {/* language */}
+      <div className="flex items-center gap-1.5 overflow-x-auto border-b border-hairline px-5 py-2.5">
+        <span className="mono-s mr-1 shrink-0 text-ash">Language</span>
+        {VOICE_LANGS.map((l) => (
+          <button
+            key={l.code}
+            type="button"
+            onClick={() => switchLang(l.code)}
+            aria-pressed={l.code === lang.code}
+            className={`shrink-0 rounded-full border px-3 py-1 text-[0.8rem] transition-colors ${
+              l.code === lang.code
+                ? "border-corona-soft/60 bg-corona-soft/10 text-moon"
+                : "border-hairline text-ash hover:border-moon/30 hover:text-moon"
+            }`}
+          >
+            {l.label}
+          </button>
+        ))}
       </div>
 
       {/* transcript */}
@@ -302,7 +328,7 @@ export default function BookingChat() {
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            placeholder={listening ? "Listening…" : "Tell me about your business…"}
+            placeholder={listening ? "Listening…" : lang.placeholder}
             aria-label="Message"
             className="min-w-0 flex-1 rounded-full border border-hairline bg-transparent px-4 py-2.5 text-sm text-moon placeholder:text-ash/60 focus:border-corona-soft/70 focus:outline-none"
           />
@@ -323,6 +349,8 @@ export default function BookingChat() {
           {micSupported
             ? "Type, or tap the microphone to speak. It books straight into the studio calendar."
             : "It books straight into the studio calendar."}
+          {!canSpeak &&
+            " No voice is available for this language on this device, so replies stay on screen."}
         </p>
       </div>
     </div>

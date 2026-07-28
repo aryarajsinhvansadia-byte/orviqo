@@ -1,55 +1,40 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  DEFAULT_LANG,
+  VOICE_LANGS,
+  pickVoice,
+  toSpeechChunks,
+  withDirective,
+  type LangCode,
+  type VoiceLang,
+} from "@/lib/voice-langs";
+import { createSpeaker, getRecognitionCtor, type Recognition } from "@/lib/speech";
+import { getSessionId, resetSessionId } from "@/lib/session";
 
 /**
  * A real spoken conversation with ORVIQO's agent — the visitor's microphone in,
- * Claude out loud. The browser handles speech-to-text and text-to-speech; the
- * thinking is the same live agent that powers the concierge.
+ * the studio's booking brain out loud, in four languages.
  *
  * The loop is hands-free: listen → think → speak → listen again, until the
  * visitor ends it. The mic is always closed while the agent is speaking so the
  * voice never hears itself.
+ *
+ * This talks to the same n8n workflow as /talk/ rather than to /api/voice/,
+ * because that workflow is the only thing holding the calendar tool. Routing
+ * here is what lets someone book a consultation with their voice — the plain
+ * API route can answer questions beautifully but has no hands.
+ *
+ * The trade: n8n replies in one piece instead of streaming, so the agent waits
+ * for the whole answer before it starts talking. Sentence-splitting on arrival
+ * keeps the delivery natural once it does.
  */
-
-/* --- minimal Web Speech typings (not in the standard TS lib) --- */
-type SpeechRecognitionAlternative = { transcript: string };
-type SpeechRecognitionResult = {
-  isFinal: boolean;
-  0: SpeechRecognitionAlternative;
-};
-type SpeechRecognitionEventLike = {
-  resultIndex: number;
-  results: { length: number; [i: number]: SpeechRecognitionResult };
-};
-type SpeechRecognitionLike = {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  maxAlternatives: number;
-  start: () => void;
-  stop: () => void;
-  abort: () => void;
-  onresult: ((e: SpeechRecognitionEventLike) => void) | null;
-  onerror: ((e: { error: string }) => void) | null;
-  onend: (() => void) | null;
-};
-type RecognitionCtor = new () => SpeechRecognitionLike;
-
-function getRecognitionCtor(): RecognitionCtor | null {
-  if (typeof window === "undefined") return null;
-  const w = window as unknown as {
-    SpeechRecognition?: RecognitionCtor;
-    webkitSpeechRecognition?: RecognitionCtor;
-  };
-  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
-}
+const BOOKING_URL =
+  "https://orviqo.app.n8n.cloud/webhook/0e614cff-6c48-46e3-a8bf-6906d718c326/chat";
 
 type Phase = "idle" | "listening" | "thinking" | "speaking";
 type Turn = { role: "user" | "assistant"; content: string };
-
-const OPENER =
-  "Hi — I'm ORVIQO's assistant. Tell me about your business and what you'd like to build, and I'll tell you honestly what I'd do first.";
 
 export default function LiveVoiceAgent() {
   const [phase, setPhase] = useState<Phase>("idle");
@@ -58,8 +43,18 @@ export default function LiveVoiceAgent() {
   const [error, setError] = useState<string | null>(null);
   const [supported, setSupported] = useState(true);
   const [typed, setTyped] = useState("");
+  const [lang, setLang] = useState<VoiceLang>(DEFAULT_LANG);
+  const [hasBrowserVoice, setHasBrowserVoice] = useState(true);
+  const [serverVoiceOff, setServerVoiceOff] = useState(false);
+  // Silent only when neither the studio voice nor the device can speak this.
+  const canSpeak = hasBrowserVoice || !serverVoiceOff;
 
-  const recognition = useRef<SpeechRecognitionLike | null>(null);
+  // Mirrored so the speech loop reads the current language without being
+  // rebuilt (and torn down mid-conversation) every time it changes.
+  const langRef = useRef<VoiceLang>(DEFAULT_LANG);
+  langRef.current = lang;
+
+  const recognition = useRef<Recognition | null>(null);
   const active = useRef(false); // conversation running?
   const history = useRef<Turn[]>([]);
   const finalText = useRef("");
@@ -67,6 +62,7 @@ export default function LiveVoiceAgent() {
   const speaking = useRef(false);
   const streamDone = useRef(false);
   const voice = useRef<SpeechSynthesisVoice | null>(null);
+  const speaker = useRef(createSpeaker());
   const logRef = useRef<HTMLDivElement>(null);
   // Late-bound so the speech loop can reopen the mic without a circular import
   // of callbacks (assigned once startListening exists, below).
@@ -85,33 +81,21 @@ export default function LiveVoiceAgent() {
     });
   }, [turns, interim]);
 
-  /* pick the least robotic English voice available */
+  /* Re-pick the voice when the language changes or voices finish loading. */
   useEffect(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     const choose = () => {
       const all = window.speechSynthesis.getVoices();
-      if (!all.length) return;
-      const preferred = [
-        /Google UK English Female/i,
-        /Samantha/i,
-        /Google US English/i,
-        /Karen|Serena|Moira/i,
-        /en-IN/i,
-      ];
-      for (const re of preferred) {
-        const hit = all.find((v) => re.test(v.name) || re.test(v.lang));
-        if (hit) {
-          voice.current = hit;
-          return;
-        }
-      }
-      voice.current = all.find((v) => v.lang.startsWith("en")) ?? all[0];
+      if (!all.length) return; // still loading — voiceschanged will fire
+      const hit = pickVoice(lang, all);
+      voice.current = hit;
+      setHasBrowserVoice(hit !== null);
     };
     choose();
     window.speechSynthesis.addEventListener("voiceschanged", choose);
     return () =>
       window.speechSynthesis.removeEventListener("voiceschanged", choose);
-  }, []);
+  }, [lang]);
 
   const stopEverything = useCallback(() => {
     active.current = false;
@@ -120,7 +104,7 @@ export default function LiveVoiceAgent() {
     try {
       recognition.current?.abort();
     } catch {}
-    if (typeof window !== "undefined") window.speechSynthesis?.cancel();
+    speaker.current.cancel();
   }, []);
 
   useEffect(() => () => stopEverything(), [stopEverything]);
@@ -137,23 +121,25 @@ export default function LiveVoiceAgent() {
     }
     speaking.current = true;
     setPhase("speaking");
-    const utter = new SpeechSynthesisUtterance(next);
-    if (voice.current) utter.voice = voice.current;
-    utter.rate = 1.02;
-    utter.pitch = 1;
-    const done = () => {
-      speaking.current = false;
-      drainSpeech();
-    };
-    utter.onend = done;
-    utter.onerror = done;
-    window.speechSynthesis.speak(utter);
+    // play() always settles — even when nothing can speak this script — so the
+    // listen → think → speak loop can never stall waiting on a voice.
+    speaker.current
+      .play(next, langRef.current, voice.current)
+      .catch(() => {})
+      .finally(() => {
+        if (speaker.current.serverOk() === false) setServerVoiceOff(true);
+        speaking.current = false;
+        drainSpeech();
+      });
   }, []);
 
   const say = useCallback(
     (text: string) => {
       const t = text.trim();
       if (!t) return;
+      // Queue regardless of the device's own voices — the studio voice may be
+      // able to read a script the browser can't, and the speaker resolves
+      // silently if neither can.
       speechQueue.current.push(t);
       drainSpeech();
     },
@@ -170,50 +156,32 @@ export default function LiveVoiceAgent() {
       setTurns([...history.current]);
 
       streamDone.current = false;
-      let spokenUpTo = 0;
-      let full = "";
 
       try {
-        const res = await fetch("/api/voice/", {
+        // The booking workflow — the only brain wired to the studio calendar.
+        const res = await fetch(BOOKING_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ messages: history.current }),
+          body: JSON.stringify({
+            action: "sendMessage",
+            sessionId: getSessionId(),
+            chatInput: withDirective(text, langRef.current),
+          }),
         });
-        const reader = res.body?.getReader();
-        const decoder = new TextDecoder();
+        const data = (await res.json().catch(() => null)) as { output?: string } | null;
+        const reply = data?.output?.trim();
+        if (!reply) throw new Error("no reply");
 
-        if (reader) {
-          // Speak each sentence as soon as it lands — no waiting for the end.
-          for (;;) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            full += decoder.decode(value, { stream: true });
-            const boundary = full.lastIndexOf(". ");
-            const cut = Math.max(
-              boundary,
-              full.lastIndexOf("? "),
-              full.lastIndexOf("! "),
-              full.lastIndexOf("\n")
-            );
-            if (cut > spokenUpTo) {
-              say(full.slice(spokenUpTo, cut + 1));
-              spokenUpTo = cut + 1;
-            }
-            setTurns([
-              ...history.current,
-              { role: "assistant", content: full },
-            ]);
-          }
-        }
-        if (full.slice(spokenUpTo).trim()) say(full.slice(spokenUpTo));
-
-        history.current = [
-          ...history.current,
-          { role: "assistant", content: full },
-        ];
+        history.current = [...history.current, { role: "assistant", content: reply }];
         setTurns([...history.current]);
+        // Sentence by sentence, so the delivery breathes instead of arriving
+        // as one long unbroken utterance.
+        for (const chunk of toSpeechChunks(reply)) say(chunk);
       } catch {
-        say("Sorry — I lost the connection there. Could you say that again?");
+        const sorry = "Sorry — I lost the connection there. Could you say that again?";
+        history.current = [...history.current, { role: "assistant", content: sorry }];
+        setTurns([...history.current]);
+        say(sorry);
       } finally {
         streamDone.current = true;
         drainSpeech(); // if speech already finished, this resumes listening
@@ -232,7 +200,7 @@ export default function LiveVoiceAgent() {
     } catch {}
 
     const rec = new Ctor();
-    rec.lang = "en-IN";
+    rec.lang = langRef.current.stt;
     rec.continuous = false;
     rec.interimResults = true;
     rec.maxAlternatives = 1;
@@ -286,15 +254,31 @@ export default function LiveVoiceAgent() {
     active.current = true;
     streamDone.current = true;
     speechQueue.current = [];
-    setTurns([{ role: "assistant", content: OPENER }]);
-    history.current = [{ role: "assistant", content: OPENER }];
-    say(OPENER);
+    const opener = lang.greeting;
+    setTurns([{ role: "assistant", content: opener }]);
+    history.current = [{ role: "assistant", content: opener }];
+    say(opener);
   }
 
   function end() {
     stopEverything();
     setPhase("idle");
     setInterim("");
+  }
+
+  /** Switching language ends the current call and starts a clean session. */
+  function switchLang(code: LangCode) {
+    const next = VOICE_LANGS.find((l) => l.code === code) ?? DEFAULT_LANG;
+    if (next.code === lang.code) return;
+    stopEverything();
+    setPhase("idle");
+    setInterim("");
+    setTurns([]);
+    setError(null);
+    history.current = [];
+    setLang(next);
+    langRef.current = next;
+    resetSessionId();
   }
 
   function sendTyped(e: React.FormEvent) {
@@ -334,6 +318,25 @@ export default function LiveVoiceAgent() {
           </div>
         </div>
         <Bars active={phase === "speaking"} listening={phase === "listening"} />
+      </div>
+
+      {/* language */}
+      <div className="flex items-center gap-1.5 overflow-x-auto border-b border-hairline px-4 py-2.5">
+        {VOICE_LANGS.map((l) => (
+          <button
+            key={l.code}
+            type="button"
+            onClick={() => switchLang(l.code)}
+            aria-pressed={l.code === lang.code}
+            className={`shrink-0 rounded-full border px-3 py-1 text-[0.78rem] transition-colors ${
+              l.code === lang.code
+                ? "border-corona-soft/60 bg-corona-soft/10 text-moon"
+                : "border-hairline text-ash hover:border-moon/30 hover:text-moon"
+            }`}
+          >
+            {l.label}
+          </button>
+        ))}
       </div>
 
       {/* transcript */}
@@ -413,8 +416,9 @@ export default function LiveVoiceAgent() {
           </p>
         )}
         <p className="mono-s mt-3 text-center text-ash">
-          Live — your voice, a real model, spoken back. Production systems answer
-          your actual phone line.
+          {canSpeak
+            ? "Live — your voice, a real model, spoken back. It can book a consultation while you talk."
+            : "Live — it hears you and can book a consultation, but your device has no voice for this language, so it replies on screen."}
         </p>
       </div>
     </div>
