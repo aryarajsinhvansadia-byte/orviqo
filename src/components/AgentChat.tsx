@@ -34,6 +34,13 @@ export default function AgentChat() {
   const [lang, setLang] = useState<VoiceLang>(DEFAULT_LANG);
   const [listening, setListening] = useState(false);
   const [speakReplies, setSpeakReplies] = useState(false);
+  /** Hands-free mode: listen → answer → speak → listen, until ended. */
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
+  const voiceActive = useRef(false);
+  // Late-bound so the turn can reopen the mic without the callbacks forming a cycle.
+  const listenAgain = useRef<() => void>(() => {});
   const [micSupported, setMicSupported] = useState(false);
   const [hasBrowserVoice, setHasBrowserVoice] = useState(true);
   const [serverVoiceOff, setServerVoiceOff] = useState(false);
@@ -68,9 +75,11 @@ export default function AgentChat() {
     return () => window.speechSynthesis.removeEventListener("voiceschanged", choose);
   }, [lang]);
 
-  /* Closing the widget must stop the mic and the voice. */
+  /* Closing the widget must stop the mic, the voice and the hands-free loop. */
   useEffect(() => {
     if (open) return;
+    voiceActive.current = false;
+    setVoiceMode(false);
     try {
       recognition.current?.abort();
     } catch {}
@@ -115,6 +124,16 @@ export default function AgentChat() {
     startScroll();
   }, [open]);
 
+  /** Speak the answer if asked to, then hand the turn back to the visitor. */
+  async function finishTurn(reply: string) {
+    if (speakReplies || voiceActive.current) {
+      setSpeaking(true);
+      await speak(reply);
+      setSpeaking(false);
+    }
+    if (voiceActive.current) listenAgain.current();
+  }
+
   async function send(text: string) {
     const q = text.trim();
     if (!q || busy) return;
@@ -150,7 +169,9 @@ export default function AgentChat() {
       const reply = data?.output?.trim();
       if (!reply) throw new Error("no reply");
       setReply(reply);
-      if (speakReplies) speak(reply);
+      setBusy(false);
+      await finishTurn(reply);
+      return;
     } catch (bookingErr) {
       if ((bookingErr as Error).name === "AbortError") {
         setBusy(false);
@@ -183,12 +204,15 @@ export default function AgentChat() {
             return copy;
           });
         }
-        if (speakReplies && full.trim()) speak(full);
+        setBusy(false);
+        if (full.trim()) await finishTurn(full);
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
-          setReply(
-            "Sorry — I couldn't reach the studio's assistant just now. Please try again, or email hello@orviqo.net."
-          );
+          const sorry =
+            "Sorry — I couldn't reach the studio's assistant just now. Please try again, or email hello@orviqo.net.";
+          setReply(sorry);
+          setBusy(false);
+          await finishTurn(sorry);
         }
       }
     } finally {
@@ -218,11 +242,23 @@ export default function AgentChat() {
       }
       setInput(finalText + live);
     };
-    rec.onerror = () => setListening(false);
+    rec.onerror = (e) => {
+      setListening(false);
+      // A blocked mic would otherwise leave hands-free mode waiting forever.
+      if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+        voiceActive.current = false;
+        setVoiceNotice(
+          "I can't reach your microphone. Allow it in your browser's address bar, or keep typing."
+        );
+      }
+    };
     rec.onend = () => {
       setListening(false);
       const said = finalText.trim();
       if (said) send(said);
+      // Silence in hands-free mode isn't the end of the conversation — the
+      // visitor is thinking. Reopen the mic instead of dropping the line.
+      else if (voiceActive.current) listenAgain.current();
     };
 
     recognition.current = rec;
@@ -230,6 +266,31 @@ export default function AgentChat() {
       rec.start();
       setListening(true);
     } catch {}
+  }
+
+  listenAgain.current = startListening;
+
+  /** Opens the panel straight into a hands-free conversation. */
+  function startVoiceMode() {
+    setOpen(true);
+    setVoiceMode(true);
+    setSpeakReplies(true);
+    setVoiceNotice(null);
+    voiceActive.current = true;
+    setInput("");
+    startListening();
+  }
+
+  /** Back to typing, without closing the conversation. */
+  function stopVoiceMode() {
+    voiceActive.current = false;
+    setVoiceMode(false);
+    try {
+      recognition.current?.abort();
+    } catch {}
+    speaker.current.cancel();
+    setListening(false);
+    setInput("");
   }
 
   function toggleMic() {
@@ -262,22 +323,55 @@ export default function AgentChat() {
   }
 
   // The canned prompts are English, so they only belong on the English thread.
-  const showSuggestions = messages.length === 1 && lang.code === "en-IN";
+  const showSuggestions = messages.length === 1 && lang.code === "en-IN" && !voiceMode;
 
   return (
     <>
       {/* launcher */}
-      <motion.button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close the ORVIQO assistant" : "Open the ORVIQO assistant"}
-        aria-expanded={open}
-        data-cursor={open ? "Close" : "Ask"}
+      <motion.div
         initial={reduce ? false : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2.2, duration: 0.7, ease: EASE }}
-        className="group fixed bottom-6 right-6 z-[85] flex h-14 items-center gap-3 rounded-full border border-hairline bg-slate/90 pl-4 pr-5 text-moon backdrop-blur-md transition-colors duration-300 hover:border-corona-soft/40 md:bottom-8 md:right-8"
+        className="fixed bottom-6 right-6 z-[85] flex items-center gap-2 md:bottom-8 md:right-8"
       >
+        {/* straight into a spoken conversation — no menu, no page change */}
+        {micSupported && !open && (
+          <button
+            type="button"
+            onClick={startVoiceMode}
+            aria-label="Talk to the ORVIQO assistant"
+            data-cursor="Talk"
+            className="group relative grid h-14 w-14 place-items-center rounded-full border border-hairline bg-slate/90 text-moon backdrop-blur-md transition-colors duration-300 hover:border-corona-soft/50"
+          >
+            <span
+              aria-hidden
+              className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              style={{ boxShadow: "0 0 22px rgba(255,139,61,0.35) inset" }}
+            />
+            <svg viewBox="0 0 24 24" fill="none" className="relative h-5 w-5" aria-hidden>
+              <path
+                d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path
+                d="M5 11a7 7 0 0 0 14 0M12 18v3"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close the ORVIQO assistant" : "Open the ORVIQO assistant"}
+          aria-expanded={open}
+          data-cursor={open ? "Close" : "Ask"}
+          className="group flex h-14 items-center gap-3 rounded-full border border-hairline bg-slate/90 pl-4 pr-5 text-moon backdrop-blur-md transition-colors duration-300 hover:border-corona-soft/40"
+        >
         <span className="relative flex h-2.5 w-2.5">
           {!reduce && (
             <span
@@ -294,10 +388,11 @@ export default function AgentChat() {
             }}
           />
         </span>
-        <span className="display text-[0.95rem] tracking-tight">
-          {open ? "Close" : "Ask ORVIQO"}
-        </span>
-      </motion.button>
+          <span className="display text-[0.95rem] tracking-tight">
+            {open ? "Close" : "Ask ORVIQO"}
+          </span>
+        </button>
+      </motion.div>
 
       <AnimatePresence>
         {open && (
@@ -369,8 +464,69 @@ export default function AgentChat() {
               ))}
             </div>
 
+            {/* voice stage — replaces the thread while hands-free */}
+            {voiceMode && (
+              <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-8">
+                <div className="relative grid h-32 w-32 place-items-center">
+                  {/* the corona breathes with whoever is talking */}
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background:
+                        "radial-gradient(circle, transparent 55%, rgba(255,139,61,0.28) 68%, transparent 76%)",
+                      animation:
+                        reduce || (!listening && !busy && !speaking)
+                          ? undefined
+                          : `${listening ? "voice-listen 1.6s" : busy ? "voice-think 1s" : "voice-speak 0.7s"} ease-in-out infinite`,
+                    }}
+                  />
+                  <span
+                    aria-hidden
+                    className="h-20 w-20 rounded-full"
+                    style={{
+                      background:
+                        "radial-gradient(circle at 38% 35%, #17171f 0%, #0b0b11 62%), radial-gradient(circle, transparent 58%, rgba(255,139,61,0.75) 66%, transparent 74%)",
+                      boxShadow: "0 0 40px rgba(255,139,61,0.28)",
+                    }}
+                  />
+                </div>
+
+                <p className="mono-s text-ash">
+                  {voiceNotice
+                    ? "Microphone blocked"
+                    : listening
+                      ? "Listening…"
+                      : busy
+                        ? "Thinking…"
+                        : speaking
+                          ? "Speaking…"
+                          : "Ready"}
+                </p>
+
+                <p className="min-h-[3.5rem] max-w-[18rem] text-center text-sm leading-relaxed text-moon/90">
+                  {voiceNotice ||
+                    input ||
+                    messages[messages.length - 1]?.content.slice(0, 160) ||
+                    "Say hello, or tell me about your business."}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={stopVoiceMode}
+                  className="rounded-full border border-hairline px-5 py-2 text-sm text-ash transition-colors hover:border-moon/40 hover:text-moon"
+                >
+                  Switch to typing
+                </button>
+              </div>
+            )}
+
             {/* thread */}
-            <div ref={scrollRef} className="flex-1 space-y-3.5 overflow-y-auto px-4 py-4">
+            <div
+              ref={scrollRef}
+              hidden={voiceMode}
+              className="flex-1 space-y-3.5 overflow-y-auto px-4 py-4"
+            >
               {messages.map((msg, i) => (
                 <div
                   key={i}
@@ -419,6 +575,7 @@ export default function AgentChat() {
                 e.preventDefault();
                 send(input);
               }}
+              hidden={voiceMode}
               className="flex items-center gap-2 px-4 py-3"
             >
               {micSupported && (
