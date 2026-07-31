@@ -341,12 +341,12 @@ export default function AgentChat() {
             onClick={startVoiceMode}
             aria-label="Talk to the ORVIQO assistant"
             data-cursor="Talk"
-            className="group relative grid h-14 w-14 place-items-center rounded-full border border-hairline bg-slate/90 text-moon backdrop-blur-md transition-colors duration-300 hover:border-corona-soft/50"
+            className="group relative flex h-14 items-center gap-2 rounded-full border border-hairline bg-slate/90 pl-4 pr-5 text-moon backdrop-blur-md transition-colors duration-300 hover:border-corona-soft/50"
           >
             <span
               aria-hidden
               className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              style={{ boxShadow: "0 0 22px rgba(255,139,61,0.35) inset" }}
+              style={{ boxShadow: "0 0 22px rgba(255,139,61,0.3) inset" }}
             />
             <svg viewBox="0 0 24 24" fill="none" className="relative h-5 w-5" aria-hidden>
               <path
@@ -361,6 +361,7 @@ export default function AgentChat() {
                 strokeLinecap="round"
               />
             </svg>
+            <span className="display relative text-[0.95rem] tracking-tight">Talk</span>
           </button>
         )}
 
@@ -447,6 +448,21 @@ export default function AgentChat() {
 
             {/* language */}
             <div className="flex items-center gap-1.5 overflow-x-auto border-b border-hairline px-4 py-2">
+              {/* the way into a spoken conversation once the panel is already open */}
+              {micSupported && (
+                <button
+                  type="button"
+                  onClick={voiceMode ? stopVoiceMode : startVoiceMode}
+                  aria-pressed={voiceMode}
+                  className={`mr-1 shrink-0 rounded-full border px-2.5 py-0.5 text-[0.75rem] transition-colors ${
+                    voiceMode
+                      ? "border-corona-soft/60 bg-corona-soft/10 text-moon"
+                      : "border-hairline text-ash hover:border-moon/30 hover:text-moon"
+                  }`}
+                >
+                  {voiceMode ? "Stop" : "Talk"}
+                </button>
+              )}
               {VOICE_LANGS.map((l) => (
                 <button
                   key={l.code}
