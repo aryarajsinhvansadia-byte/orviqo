@@ -42,10 +42,16 @@ export default function BookingChat() {
   // Silent only when neither source can speak this language.
   const canSpeak = hasBrowserVoice || !serverVoiceOff;
 
+  /** Hands-free: listen → answer → speak → listen, until stopped. */
+  const [handsFree, setHandsFree] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   const recognition = useRef<Recognition | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const voice = useRef<SpeechSynthesisVoice | null>(null);
   const speaker = useRef(createSpeaker());
+  const voiceActive = useRef(false);
+  // Late-bound so the turn can reopen the mic without the callbacks forming a cycle.
+  const listenAgain = useRef<() => void>(() => {});
 
   useEffect(() => setMicSupported(getRecognitionCtor() !== null), []);
 
@@ -103,7 +109,12 @@ export default function BookingChat() {
           data?.output?.trim() ||
           "Sorry — I didn't catch that. Could you try again, or email hello@orviqo.net?";
         setTurns((t) => [...t, { role: "assistant", text: reply }]);
-        if (speakReplies) speak(reply);
+        if (speakReplies || voiceActive.current) {
+          setSpeaking(true);
+          await speak(reply);
+          setSpeaking(false);
+        }
+        if (voiceActive.current) listenAgain.current();
       } catch {
         setTurns((t) => [
           ...t,
@@ -142,6 +153,9 @@ export default function BookingChat() {
     };
     rec.onerror = (e) => {
       if (e.error === "not-allowed" || e.error === "service-not-allowed") {
+        // Otherwise hands-free would sit here waiting on a mic it can't have.
+        voiceActive.current = false;
+        setHandsFree(false);
         setNotice("Microphone access is blocked. Allow it in your browser, or just type instead.");
       }
       setListening(false);
@@ -150,6 +164,8 @@ export default function BookingChat() {
       setListening(false);
       const said = finalText.trim();
       if (said) send(said);
+      // Silence isn't the end of the conversation — the visitor is thinking.
+      else if (voiceActive.current) listenAgain.current();
     };
 
     recognition.current = rec;
@@ -159,6 +175,28 @@ export default function BookingChat() {
     } catch {}
   }, [send, lang]);
 
+  listenAgain.current = startListening;
+
+  function toggleHandsFree() {
+    if (voiceActive.current) {
+      voiceActive.current = false;
+      setHandsFree(false);
+      try {
+        recognition.current?.abort();
+      } catch {}
+      speaker.current.cancel();
+      setListening(false);
+      setSpeaking(false);
+      return;
+    }
+    voiceActive.current = true;
+    setHandsFree(true);
+    setSpeakReplies(true);
+    setNotice(null);
+    setDraft("");
+    startListening();
+  }
+
   /** Switching language resets the thread so the greeting matches. */
   function switchLang(code: LangCode) {
     const next = VOICE_LANGS.find((l) => l.code === code) ?? DEFAULT_LANG;
@@ -167,7 +205,13 @@ export default function BookingChat() {
       recognition.current?.abort();
     } catch {}
     speaker.current.cancel();
+    // Ends hands-free rather than reopening the mic on the old language —
+    // startListening closes over `lang`, so restarting here would listen in
+    // the language they just left.
+    voiceActive.current = false;
+    setHandsFree(false);
     setListening(false);
+    setSpeaking(false);
     setNotice(null);
     setLang(next);
     setDraft("");
@@ -214,7 +258,13 @@ export default function BookingChat() {
           <p className="mono-s text-moon">
             ORVIQO assistant
             <span className="ml-3 text-ash">
-              {listening ? "listening…" : thinking ? "thinking…" : "ready"}
+              {listening
+                ? "listening…"
+                : thinking
+                  ? "thinking…"
+                  : speaking
+                    ? "speaking…"
+                    : "ready"}
             </span>
           </p>
         </div>
@@ -240,6 +290,20 @@ export default function BookingChat() {
 
       {/* language */}
       <div className="flex items-center gap-1.5 overflow-x-auto border-b border-hairline px-5 py-2.5">
+        {micSupported && (
+          <button
+            type="button"
+            onClick={toggleHandsFree}
+            aria-pressed={handsFree}
+            className={`mr-2 shrink-0 rounded-full border px-3 py-1 text-[0.8rem] transition-colors ${
+              handsFree
+                ? "border-corona-soft/60 bg-corona-soft/10 text-moon light-rim"
+                : "border-hairline text-ash hover:border-moon/30 hover:text-moon"
+            }`}
+          >
+            {handsFree ? "Stop hands-free" : "Hands-free"}
+          </button>
+        )}
         <span className="mono-s mr-1 shrink-0 text-ash">Language</span>
         {VOICE_LANGS.map((l) => (
           <button
