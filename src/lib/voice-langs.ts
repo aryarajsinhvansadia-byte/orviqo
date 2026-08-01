@@ -108,23 +108,15 @@ export function pickVoice(
 }
 
 /**
- * The n8n workflow's own system prompt still describes a text-only assistant
- * and sends people to the Demo Lab to be heard — which was true before the
- * chat could listen and speak, and is now simply wrong in front of visitors.
+ * Attaches the reply-language instruction, if the language needs one.
  *
- * Correcting it at the workflow is the proper fix; this rides along on each
- * message so the assistant stops misdescribing itself in the meantime. Delete
- * this the moment the n8n prompt is updated.
+ * This used to carry a second note correcting the assistant's belief that it
+ * was text-only. That belonged in the n8n workflow's own prompt, which now
+ * says it — so the note is gone rather than duplicated in two places that
+ * could drift apart.
  */
-const CAPABILITY_NOTE =
-  "This chat can hear and speak — a microphone beside the box, a Voice switch above it, " +
-  "and a hands-free voice button on the site. Never say you are text-only, and never send " +
-  "the visitor to another page to use their voice.";
-
-/** Attaches the reply-language and self-description instructions. */
 export function withDirective(message: string, lang: VoiceLang): string {
-  const notes = [CAPABILITY_NOTE, lang.directive].filter(Boolean);
-  return `${message}\n\n[${notes.join(" ")}]`;
+  return lang.directive ? `${message}\n\n[${lang.directive}]` : message;
 }
 
 /** Split a reply into speakable chunks so synthesis starts sooner. */
