@@ -35,22 +35,24 @@
   a{color:inherit}
 
   /* nav */
-  nav{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:26px 0;gap:16px}
   .brand{display:flex;align-items:center;gap:11px;font-weight:600;letter-spacing:.22em;font-size:.95rem}
   .dot{width:26px;height:26px;position:relative;flex:none}
   .dot i{position:absolute;inset:0;border-radius:50%;
     background:radial-gradient(circle at 50% 50%, transparent 44%, rgba(255,139,61,.9) 52%, rgba(255,139,61,.15) 66%, transparent 72%);
     animation:pulse 3.2s ease-in-out infinite}
   @keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
+  nav .meta{text-align:right;line-height:1.9}
 
   /* hero */
   header{padding:70px 0 40px}
   h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:600;line-height:1.02;letter-spacing:-.02em;margin:18px 0 0}
-  .lead{max-width:44ch;color:var(--ash);font-size:1.08rem;margin-top:22px}
+  .lead{max-width:46ch;color:var(--ash);font-size:1.08rem;margin-top:22px}
   .rule{height:1px;background:var(--hair);margin:56px 0}
 
   section{padding:8px 0}
   h2{font-size:1.7rem;font-weight:600;letter-spacing:-.01em}
+  .sub{color:var(--ash);margin-top:12px;max-width:56ch}
   .eyebrow{margin-bottom:14px}
 
   /* deliverables */
@@ -59,6 +61,20 @@
   .cell h3{font-size:1rem;font-weight:600;display:flex;gap:10px;align-items:baseline}
   .cell h3::before{content:"";width:6px;height:6px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--corona-soft),var(--corona));flex:none;transform:translateY(-2px)}
   .cell p{color:var(--ash);font-size:.9rem;margin-top:6px}
+
+  /* itemised breakdown */
+  .lines{margin-top:28px;border-top:1px solid var(--hair)}
+  .line{padding:22px 0;border-bottom:1px solid var(--hair)}
+  .line-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+  .line-head h3{font-size:1.05rem;font-weight:600}
+  .line-head .amt{font-family:'Fragment Mono',monospace;font-size:1rem;color:var(--corona);white-space:nowrap}
+  .line p{color:var(--ash);font-size:.92rem;margin-top:8px;max-width:60ch}
+  .line .why{color:var(--moon);font-size:.92rem;margin-top:8px;max-width:60ch;
+    border-left:2px solid rgba(255,139,61,.45);padding-left:14px}
+  .line .why b{color:var(--corona);font-weight:600}
+  .total{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:24px 0 0}
+  .total span:first-child{font-weight:600;font-size:1.05rem}
+  .total span:last-child{font-family:'Fragment Mono',monospace;font-size:1.4rem;color:var(--moon)}
 
   /* timeline */
   .steps{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
@@ -73,14 +89,20 @@
   .price{font-size:clamp(3.2rem,10vw,5rem);font-weight:700;letter-spacing:-.03em;line-height:1;
     background:linear-gradient(100deg,var(--corona-soft),var(--corona) 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
   .price small{font-size:.9rem;color:var(--ash);font-weight:400;-webkit-text-fill-color:var(--ash);margin-left:6px}
-  .price-note{color:var(--ash);margin-top:14px;max-width:46ch}
-  .incl{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px}
-  .incl span{font-size:.82rem;color:var(--moon)}
-  .incl span::before{content:"✓ ";color:var(--corona)}
+  .price-note{color:var(--ash);margin-top:14px;max-width:46ch;position:relative}
+
+  /* plain lists */
+  .plain{margin-top:22px}
+  .plain li{list-style:none;color:var(--ash);padding:11px 0;border-bottom:1px solid var(--hair);font-size:.93rem;display:flex;gap:12px}
+  .plain li::before{content:"—";color:var(--corona);flex:none}
+  .addons li{list-style:none;color:var(--ash);padding:13px 0;border-bottom:1px solid var(--hair);
+    display:flex;justify-content:space-between;gap:18px;font-size:.93rem;align-items:baseline}
+  .addons li b{color:var(--moon);font-weight:600}
+  .addons li span{font-family:'Fragment Mono',monospace;color:var(--corona);white-space:nowrap;font-size:.85rem}
 
   /* terms */
-  .terms li{list-style:none;color:var(--ash);padding:8px 0;border-bottom:1px solid var(--hair);display:flex;gap:14px;font-size:.95rem}
-  .terms li b{color:var(--moon);min-width:130px;font-weight:600}
+  .terms li{list-style:none;color:var(--ash);padding:10px 0;border-bottom:1px solid var(--hair);display:flex;gap:14px;font-size:.95rem}
+  .terms li b{color:var(--moon);min-width:140px;font-weight:600}
 
   /* cta */
   .cta{text-align:center;padding:70px 0 30px}
@@ -100,7 +122,14 @@
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
   .reveal.in{opacity:1;transform:none}
 
-  @media (max-width:640px){.grid{grid-template-columns:1fr}.terms li{flex-direction:column;gap:2px}.terms li b{min-width:0}}
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr}
+    .terms li{flex-direction:column;gap:2px}.terms li b{min-width:0}
+    .line-head{flex-direction:column;gap:4px}
+    .addons li{flex-direction:column;gap:4px}
+    nav{flex-direction:column;align-items:flex-start;gap:10px}
+    nav .meta{text-align:left}
+  }
   @media (prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
@@ -110,7 +139,7 @@
 
   <nav class="reveal">
     <div class="brand"><span class="dot"><i></i></span>ORVIQO</div>
-    <div class="mono">Proposal · <span id="date"></span></div>
+    <div class="mono meta">Proposal ORQ-2026-004<br>6 August 2026</div>
   </nav>
 
   <header>
@@ -121,6 +150,7 @@
 
   <div class="rule reveal"></div>
 
+  <!-- ============================================ 01 WHAT WE BUILD -->
   <section>
     <p class="mono eyebrow reveal">01 — What we'll build</p>
     <h2 class="reveal">Everything a great café site needs. Nothing it doesn't.</h2>
@@ -136,8 +166,87 @@
 
   <div class="rule reveal"></div>
 
+  <!-- ============================================ 02 WHERE THE MONEY GOES -->
   <section>
-    <p class="mono eyebrow reveal">02 — Timeline</p>
+    <p class="mono eyebrow reveal">02 — Where every rupee goes</p>
+    <h2 class="reveal">A price you can check, line by line.</h2>
+    <p class="sub reveal">Below is exactly what makes up the total, what each part involves, and why it's worth paying for. If any line doesn't earn its place for you, say so and we'll take it out.</p>
+
+    <div class="lines reveal">
+
+      <div class="line">
+        <div class="line-head"><h3>Design &amp; art direction</h3><span class="amt">₹ 4,000</span></div>
+        <p>A layout designed around your photographs — colour, typography and the overall feel, drawn up for your café specifically. Includes two rounds of changes.</p>
+        <p class="why"><b>Why it costs what it does:</b> a ready-made template is cheaper, and it also looks like the other forty cafés using it. This is the part that makes someone scrolling past stop and think <em>that place looks good</em>.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Building the five pages</h3><span class="amt">₹ 5,000</span></div>
+        <p>Home, Menu, About, Gallery and Visit — written, built and tested on real phone, tablet and desktop screens, with the page speed tuned so it opens almost instantly.</p>
+        <p class="why"><b>Why it costs what it does:</b> this is the largest single piece of work — five distinct page layouts, the words on them, and testing across the screen sizes your customers actually use. Roughly seven in ten people will see this site on a phone while standing outside deciding where to eat.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Menu presentation &amp; updates</h3><span class="amt">₹ 2,000</span></div>
+        <p>Your menu laid out so it reads well on a small screen, and built so you can change a price or add a dish yourself — no developer, no waiting.</p>
+        <p class="why"><b>Why it costs what it does:</b> a café menu changes. A website that can't keep up is wrong within a month, and a wrong price on a website is an argument at the counter.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Getting found on Google</h3><span class="amt">₹ 2,000</span></div>
+        <p>Page titles and descriptions written for search, your business details marked up so Google can read them, Google Maps embedded, and your Google Business Profile connected to the site.</p>
+        <p class="why"><b>Why it costs what it does:</b> this is what turns the website from a brochure into a source of walk-ins. Without it you have a site that only people who already know you will ever see.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Launch &amp; first 30 days of care</h3><span class="amt">₹ 2,000</span></div>
+        <p>Domain and hosting connected, the site taken live, and a full month afterwards where any small change — a photo, a price, an opening hour — is made free of charge.</p>
+        <p class="why"><b>Why it costs what it does:</b> launch is where things break, and the first month is when you'll spot what you want changed. Both are covered rather than billed as extras.</p>
+      </div>
+
+      <div class="total">
+        <span>Total</span>
+        <span>₹ 15,000</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 03 NOT INCLUDED -->
+  <section>
+    <p class="mono eyebrow reveal">03 — What this does not include</p>
+    <h2 class="reveal">So there are no surprises later.</h2>
+    <p class="sub reveal">These are genuinely useful, and genuinely not in the price. Any of them can be added at any time — before or after launch.</p>
+    <ul class="plain reveal">
+      <li>Professional photography of the café, the food and the coffee. We can use your existing photos, and the design is built to make good ones look excellent.</li>
+      <li>Online ordering, payments, or table booking.</li>
+      <li>Logo or brand identity design.</li>
+      <li>Changes after the first 30 days, unless you take the optional care plan below.</li>
+      <li>The cost of your domain name (roughly ₹900 a year, paid directly by you and registered in your name).</li>
+    </ul>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 04 OPTIONAL -->
+  <section>
+    <p class="mono eyebrow reveal">04 — If you want more later</p>
+    <h2 class="reveal">Optional, and priced upfront.</h2>
+    <ul class="addons reveal">
+      <li><b>Care plan, after the free first month</b><span>₹ 1,000 / month</span></li>
+      <li><b>Photography — half day at the café</b><span>₹ 6,000 one-time</span></li>
+      <li><b>Online table booking</b><span>from ₹ 6,000 one-time</span></li>
+      <li><b>Google Business Profile management</b><span>₹ 2,000 / month</span></li>
+    </ul>
+    <p class="sub reveal" style="margin-top:18px">None of these are required. The website works completely without them — hosting for a site this size is free, and you own the accounts.</p>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 05 TIMELINE -->
+  <section>
+    <p class="mono eyebrow reveal">05 — Timeline</p>
     <h2 class="reveal">Live in about a week and a half.</h2>
     <div class="steps reveal">
       <span class="step"><b>Day 1–2</b> · Content &amp; direction</span>
@@ -145,36 +254,32 @@
       <span class="step"><b>Day 7–9</b> · Review &amp; refine</span>
       <span class="step"><b>Day 10</b> · Launch</span>
     </div>
+    <p class="sub reveal" style="margin-top:20px">The clock starts when we have your photos, your menu and your opening hours. That is the one thing that decides whether ten days becomes twenty.</p>
   </section>
 
   <div class="rule reveal"></div>
 
+  <!-- ============================================ 06 INVESTMENT -->
   <section>
-    <p class="mono eyebrow reveal">03 — Investment</p>
+    <p class="mono eyebrow reveal">06 — Investment</p>
     <div class="price-card reveal">
-      <div class="price">₹<span id="price">0</span><small>one-time</small></div>
-      <p class="price-note">A complete website — designed, built, and launched. No monthly fee, no surprises.</p>
-      <div class="incl">
-        <span>Design &amp; development</span>
-        <span>Mobile-ready</span>
-        <span>Launch &amp; setup</span>
-        <span>2 rounds of revisions</span>
-        <span>30 days free care</span>
-        <span>SEO basics</span>
-      </div>
+      <div class="price">₹<span id="price">15,000</span><small>one-time</small></div>
+      <p class="price-note">A complete website — designed, built and launched. No monthly fee required, and nothing hidden: the full breakdown of this figure is in section 02 above.</p>
     </div>
   </section>
 
   <div class="rule reveal"></div>
 
+  <!-- ============================================ 07 TERMS -->
   <section>
-    <p class="mono eyebrow reveal">04 — How it works</p>
+    <p class="mono eyebrow reveal">07 — How it works</p>
     <ul class="terms reveal">
       <li><b>To begin</b> 50% advance (₹7,500) — the rest on launch.</li>
       <li><b>Revisions</b> Two rounds included on every page.</li>
       <li><b>After launch</b> 30 days of free care and small changes.</li>
-      <li><b>You own it</b> The site, the content and the accounts are yours.</li>
-      <li><b>Valid for</b> 15 days from today.</li>
+      <li><b>You own it</b> The site, the content, the domain and the accounts are yours — under your name, not ours.</li>
+      <li><b>If it stalls</b> If content doesn't arrive, the timeline pauses rather than the price changing.</li>
+      <li><b>Valid until</b> 21 August 2026.</li>
     </ul>
   </section>
 
@@ -198,10 +303,6 @@
 </div>
 
 <script>
-  // date
-  document.getElementById('date').textContent =
-    new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-
   // reveal on scroll
   var io=new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);} });

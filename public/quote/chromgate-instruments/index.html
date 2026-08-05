@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proposal · Chromgate Instruments × ORVIQO</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Instrument+Serif:ital@1&family=Fragment+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --night:#0a0a10; --slate:#14141c; --moon:#eae8e3; --ash:#8f8e96;
+    --corona:#ff8b3d; --corona-soft:#ffd9a3; --hair:rgba(234,232,227,.1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--night); color:var(--moon);
+    font-family:'Archivo',system-ui,sans-serif; line-height:1.6;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  .bg{position:fixed; inset:0; z-index:-2; background:
+    radial-gradient(60% 50% at 78% 12%, rgba(255,139,61,.16), transparent 60%),
+    radial-gradient(50% 40% at 15% 85%, rgba(90,110,180,.10), transparent 60%),
+    var(--night);}
+  .bg::after{content:"";position:absolute;inset:0;background:
+    radial-gradient(40% 30% at 80% 15%, rgba(255,139,61,.10), transparent 60%);
+    animation:drift 14s ease-in-out infinite alternate;}
+  @keyframes drift{from{transform:translate(0,0)}to{transform:translate(-6%,4%)}}
+  .shell{max-width:820px;margin:0 auto;padding:0 28px}
+  .mono{font-family:'Fragment Mono',monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ash)}
+  .serif{font-family:'Instrument Serif',serif;font-style:italic}
+  .amber{color:var(--corona)}
+  a{color:inherit}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:26px 0;gap:16px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:600;letter-spacing:.22em;font-size:.95rem}
+  .dot{width:26px;height:26px;position:relative;flex:none}
+  .dot i{position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 50% 50%, transparent 44%, rgba(255,139,61,.9) 52%, rgba(255,139,61,.15) 66%, transparent 72%);
+    animation:pulse 3.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
+  nav .meta{text-align:right;line-height:1.9}
+
+  header{padding:70px 0 40px}
+  h1{font-size:clamp(2.4rem,6.4vw,4.1rem);font-weight:600;line-height:1.04;letter-spacing:-.02em;margin:18px 0 0}
+  .lead{max-width:50ch;color:var(--ash);font-size:1.08rem;margin-top:22px}
+  .rule{height:1px;background:var(--hair);margin:56px 0}
+
+  section{padding:8px 0}
+  h2{font-size:1.7rem;font-weight:600;letter-spacing:-.01em}
+  .sub{color:var(--ash);margin-top:12px;max-width:58ch}
+  .eyebrow{margin-bottom:14px}
+
+  /* live banner */
+  .live{margin-top:28px;border:1px solid rgba(255,139,61,.35);border-radius:8px;padding:24px 26px;
+    background:linear-gradient(180deg, rgba(255,139,61,.07), rgba(20,20,28,.4))}
+  .live .mono{color:var(--corona)}
+  .live p{color:var(--ash);margin-top:10px;max-width:52ch;font-size:.95rem}
+  .live a.link{display:inline-block;margin-top:14px;font-size:1.15rem;font-weight:600;color:var(--moon);
+    text-decoration:none;border-bottom:1px solid rgba(255,139,61,.6);padding-bottom:2px}
+  .live a.link:hover{color:var(--corona)}
+
+  /* stats */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hair);
+    border:1px solid var(--hair);border-radius:4px;overflow:hidden;margin-top:26px}
+  .stat{background:var(--night);padding:20px}
+  .stat b{display:block;font-family:'Fragment Mono',monospace;font-size:1.7rem;color:var(--moon);font-weight:400}
+  .stat span{display:block;color:var(--ash);font-size:.78rem;margin-top:6px;line-height:1.4}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:4px;overflow:hidden;margin-top:26px}
+  .cell{background:var(--night);padding:22px}
+  .cell h3{font-size:1rem;font-weight:600;display:flex;gap:10px;align-items:baseline}
+  .cell h3::before{content:"";width:6px;height:6px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--corona-soft),var(--corona));flex:none;transform:translateY(-2px)}
+  .cell p{color:var(--ash);font-size:.9rem;margin-top:6px}
+
+  /* itemised breakdown */
+  .lines{margin-top:26px;border-top:1px solid var(--hair)}
+  .line{padding:22px 0;border-bottom:1px solid var(--hair)}
+  .line-head{display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+  .line-head h3{font-size:1.05rem;font-weight:600}
+  .line-head .amt{font-family:'Fragment Mono',monospace;font-size:1rem;color:var(--corona);white-space:nowrap}
+  .line p{color:var(--ash);font-size:.92rem;margin-top:8px;max-width:60ch}
+  .line .why{color:var(--moon);font-size:.92rem;margin-top:8px;max-width:60ch;
+    border-left:2px solid rgba(255,139,61,.45);padding-left:14px}
+  .line .why b{color:var(--corona);font-weight:600}
+  .total{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:24px 0 0}
+  .total span:first-child{font-weight:600;font-size:1.05rem}
+  .total span:last-child{font-family:'Fragment Mono',monospace;font-size:1.4rem;color:var(--moon)}
+  .subtotal{font-family:'Fragment Mono',monospace;font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--corona);padding:22px 0 4px}
+
+  /* payment options */
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+  .opt{border:1px solid var(--hair);border-radius:8px;padding:26px 24px;background:rgba(20,20,28,.4);
+    display:flex;flex-direction:column}
+  .opt.feature{border-color:rgba(255,139,61,.35);background:linear-gradient(180deg, rgba(255,139,61,.06), rgba(20,20,28,.4))}
+  .opt h3{font-size:1.15rem;font-weight:600;margin-top:10px}
+  .opt .big{font-family:'Fragment Mono',monospace;font-size:2rem;color:var(--moon);margin-top:18px;line-height:1.1}
+  .opt .big em{font-style:normal;font-size:.8rem;color:var(--ash);display:block;margin-top:6px;letter-spacing:.04em}
+  .opt ul{margin-top:18px;flex:1}
+  .opt li{list-style:none;color:var(--ash);font-size:.88rem;padding:7px 0;border-top:1px solid var(--hair);display:flex;justify-content:space-between;gap:12px}
+  .opt li b{color:var(--moon);font-weight:400}
+  .opt .yr{margin-top:16px;font-size:.85rem;color:var(--corona);font-family:'Fragment Mono',monospace}
+
+  .plain{margin-top:22px}
+  .plain li{list-style:none;color:var(--ash);padding:11px 0;border-bottom:1px solid var(--hair);font-size:.93rem;display:flex;gap:12px}
+  .plain li::before{content:"—";color:var(--corona);flex:none}
+  .addons li{list-style:none;color:var(--ash);padding:13px 0;border-bottom:1px solid var(--hair);
+    display:flex;justify-content:space-between;gap:18px;font-size:.93rem;align-items:baseline}
+  .addons li b{color:var(--moon);font-weight:600}
+  .addons li span{font-family:'Fragment Mono',monospace;color:var(--corona);white-space:nowrap;font-size:.85rem}
+
+  .terms li{list-style:none;color:var(--ash);padding:10px 0;border-bottom:1px solid var(--hair);display:flex;gap:14px;font-size:.95rem}
+  .terms li b{color:var(--moon);min-width:140px;font-weight:600}
+
+  .cta{text-align:center;padding:70px 0 30px}
+  .cta h2{font-size:clamp(1.8rem,5vw,2.6rem)}
+  .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;border-radius:999px;font-weight:600;font-size:.95rem;
+    text-decoration:none;transition:transform .25s,box-shadow .25s,background .25s}
+  .btn-primary{background:var(--moon);color:var(--night)}
+  .btn-primary:hover{background:var(--corona-soft);transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,139,61,.25)}
+  .btn-ghost{border:1px solid var(--hair);color:var(--moon)}
+  .btn-ghost:hover{border-color:rgba(255,139,61,.5);transform:translateY(-2px)}
+
+  footer{border-top:1px solid var(--hair);margin-top:60px;padding:34px 0 60px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;color:var(--ash)}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:700px){
+    .grid,.options{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .terms li{flex-direction:column;gap:2px}.terms li b{min-width:0}
+    .line-head{flex-direction:column;gap:4px}
+    .addons li{flex-direction:column;gap:4px}
+    nav{flex-direction:column;align-items:flex-start;gap:10px}
+    nav .meta{text-align:left}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="shell">
+
+  <nav class="reveal">
+    <div class="brand"><span class="dot"><i></i></span>ORVIQO</div>
+    <div class="mono meta">Proposal ORQ-2026-011<br>6 August 2026</div>
+  </nav>
+
+  <header>
+    <p class="mono reveal">Prepared for Chromgate Instruments Pvt.&nbsp;Ltd.</p>
+    <h1 class="reveal">Your 2026 catalogue,<br><span class="serif amber">working for you online.</span></h1>
+    <p class="lead reveal">Every product in the Chromgate catalogue now has its own page, written to be found by the laboratories searching for it — and an AI assistant that helps them work out what they need, then hands the enquiry to your team.</p>
+  </header>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 01 ALREADY BUILT -->
+  <section>
+    <p class="mono eyebrow reveal">01 — Status</p>
+    <h2 class="reveal">This isn't a plan. It's already built.</h2>
+    <p class="sub reveal">The entire website described in this proposal is complete and running. You can open it, click through every page and test the AI assistant before you decide anything.</p>
+
+    <div class="live reveal">
+      <p class="mono">See it for yourself</p>
+      <a class="link" href="https://chromgate.vercel.app" target="_blank" rel="noopener">chromgate.vercel.app&nbsp;→</a>
+      <p>This is a private preview address, deliberately hidden from Google. On acceptance it moves to chromgateinstruments.com and opens to search engines.</p>
+    </div>
+
+    <div class="stats reveal">
+      <div class="stat"><b>118</b><span>Pages, all written</span></div>
+      <div class="stat"><b>72</b><span>Individual product pages</span></div>
+      <div class="stat"><b>73</b><span>Product photographs recovered</span></div>
+      <div class="stat"><b>106</b><span>Articles planned out</span></div>
+    </div>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 02 WHAT WAS BUILT -->
+  <section>
+    <p class="mono eyebrow reveal">02 — What has been delivered</p>
+    <h2 class="reveal">Built entirely from your 2026 catalogue.</h2>
+    <p class="sub reveal">Nothing was invented. Every specification, product name and photograph on the site traces back to a page of your own catalogue.</p>
+    <div class="grid reveal">
+      <div class="cell"><h3>A design made for Chromgate</h3><p>An "engineering documentation" style drawn up specifically for you — precise and technical, benchmarked against global instrument companies. No template.</p></div>
+      <div class="cell"><h3>118 pages, fully written</h3><p>72 product pages, 6 ranges, 8 industries, 8 applications, 6 technical articles, plus About, Capabilities, Support, FAQs and Contact.</p></div>
+      <div class="cell"><h3>Photographs recovered</h3><p>73 product images extracted from your print catalogue, cleaned and centred — no photoshoot needed to launch.</p></div>
+      <div class="cell"><h3>Built to be found</h3><p>Every product marked up so Google can read it, an image sitemap, local search set up for Vadodara, and a 106-topic article plan.</p></div>
+      <div class="cell"><h3>Built to collect enquiries</h3><p>Quotation and support forms throughout, click-to-call and WhatsApp always in reach, and your catalogue available to download.</p></div>
+      <div class="cell"><h3>Nothing fabricated</h3><p>No invented testimonials, certifications or client names. Everything on the site can be defended in front of a customer or an auditor.</p></div>
+    </div>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 03 THE AI -->
+  <section>
+    <p class="mono eyebrow reveal">03 — The specification assistant</p>
+    <h2 class="reveal">The part your competitors don't have.</h2>
+    <p class="sub reveal">A chat assistant powered by Anthropic's Claude, the same AI used by Fortune 500 companies — but restricted entirely to the Chromgate catalogue. It works the way one of your sales engineers would.</p>
+    <div class="grid reveal">
+      <div class="cell"><h3>It asks the right questions</h3><p>Which instruments, which gases, what the method must detect — then recommends real Chromgate products, with links.</p></div>
+      <div class="cell"><h3>It cannot make things up</h3><p>It will not quote a price, a lead time or a certification. Asked for any of those, it routes the customer to your technical team.</p></div>
+      <div class="cell"><h3>It stays up</h3><p>It runs on three separate AI models. If one is busy, the next takes over, so a visitor is never left without an answer.</p></div>
+      <div class="cell"><h3>It qualifies the enquiry</h3><p>By the time someone contacts you, they've already described their instruments and gases — so your team starts halfway through the conversation.</p></div>
+    </div>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 04 WHERE THE MONEY GOES -->
+  <section>
+    <p class="mono eyebrow reveal">04 — Where every rupee goes</p>
+    <h2 class="reveal">A price you can check, line by line.</h2>
+    <p class="sub reveal">Below is exactly what makes up the total, what each part involved, and why it's worth paying for. If any line doesn't earn its place for you, say so and we'll discuss it.</p>
+
+    <div class="lines reveal">
+      <p class="subtotal">The website — ₹ 15,000</p>
+
+      <div class="line">
+        <div class="line-head"><h3>Design &amp; art direction</h3><span class="amt">₹ 4,000</span></div>
+        <p>A design language created for Chromgate: the type, the rules, the specification tables, the numbered figures — all drawn up specifically, then applied consistently across 118 pages.</p>
+        <p class="why"><b>Why it costs what it does:</b> a template would have been faster and cheaper, and it would have looked like every other instrument supplier in India. Your customers are technical buyers who judge a supplier partly on whether they look precise. This is that impression.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Building and writing 118 pages</h3><span class="amt">₹ 5,000</span></div>
+        <p>72 individual product pages with specification tables, 6 range pages, 8 industries, 8 applications, 6 technical articles and 18 company pages — every word written from your catalogue, none of it placeholder.</p>
+        <p class="why"><b>Why it costs what it does:</b> this is the largest single piece of work. Each product page is a separate page Google can rank — 72 chances to be found rather than one. A single-page site would have cost less and been invisible.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Recovering 73 product photographs</h3><span class="amt">₹ 2,500</span></div>
+        <p>Your catalogue was a print PDF with no separate image files. Each product photograph was located inside the pages, cut out, cleaned, centred on a consistent background and converted to a modern web format.</p>
+        <p class="why"><b>Why it costs what it does:</b> the alternative was a photoshoot of 73 products before the site could launch. This got you live now, and you can replace them with original photography whenever you choose.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>The search foundation</h3><span class="amt">₹ 3,500</span></div>
+        <p>Every product, your company, your two Vadodara locations and your FAQs marked up in the format Google reads directly; an image sitemap; local search consistency; six keyword clusters and a 106-article plan.</p>
+        <p class="why"><b>Why it costs what it does:</b> this is what turns the site from a brochure into a source of enquiries. Without it, only people who already know Chromgate would ever see it.</p>
+      </div>
+
+      <p class="subtotal">The AI specification assistant — ₹ 15,000</p>
+
+      <div class="line">
+        <div class="line-head"><h3>Teaching it your catalogue — and its limits</h3><span class="amt">₹ 6,000</span></div>
+        <p>The assistant is given a document compiled from the same product data the website displays, so the two can never disagree. On top of that sit the rules: never state a specification that isn't in the catalogue, never quote a price or lead time, never claim a certification.</p>
+        <p class="why"><b>Why it costs what it does:</b> this is the difference between an asset and a liability. An AI that invents a pressure rating or claims an accreditation you don't hold creates a real commercial problem. Most of this work is the guardrails, not the answers.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>The chat interface</h3><span class="amt">₹ 4,000</span></div>
+        <p>The panel itself, matched to the site's design, working on desktop and on phones, with the answers streaming in as they're written rather than making the visitor wait.</p>
+        <p class="why"><b>Why it costs what it does:</b> a slow or awkward chat box gets closed. This one is reachable from every page, including the mobile action bar.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Making it reliable</h3><span class="amt">₹ 5,000</span></div>
+        <p>Three separate AI models arranged in sequence so a busy period never leaves a visitor stranded, plus rate limiting against misuse, a hard spending cap, and testing against the questions most likely to cause trouble.</p>
+        <p class="why"><b>Why it costs what it does:</b> an AI that fails in front of a customer is worse than no AI. It was deliberately tested by trying to make it misbehave — asking it for prices, for certifications, for specifications that don't exist.</p>
+      </div>
+
+      <div class="total">
+        <span>One-time total</span>
+        <span>₹ 30,000</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 05 MONTHLY -->
+  <section>
+    <p class="mono eyebrow reveal">05 — The monthly figure</p>
+    <h2 class="reveal">₹ 4,500 a month, and what it pays for.</h2>
+    <div class="lines reveal">
+      <div class="line">
+        <div class="line-head"><h3>Hosting, monitoring and care</h3><span class="amt">₹ 1,500 / month</span></div>
+        <p>Managed hosting and security certificate, framework and security updates as they're released, uptime monitoring, and minor content changes — a price, a contact detail, a product tweak — done for you.</p>
+      </div>
+      <div class="line">
+        <div class="line-head"><h3>AI assistant service</h3><span class="amt">₹ 3,000 / month</span></div>
+        <p>All AI usage included, up to a fair-use level of around 30 visitor conversations a month, protected by a hard spending cap so the cost can never run away.</p>
+        <p class="why"><b>Why this one can't be one-time:</b> unlike the website, the assistant costs real money every time a visitor uses it — the AI is charged per conversation. This fee covers that usage rather than passing you a variable bill. If the site outgrows 30 conversations a month, that's good news and we'll revise the plan together.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 06 INVESTMENT -->
+  <section>
+    <p class="mono eyebrow reveal">06 — Investment</p>
+    <h2 class="reveal">Two ways to pay. Identical work.</h2>
+    <p class="sub reveal">Choose whichever suits your cash flow.</p>
+
+    <div class="options reveal">
+      <div class="opt feature">
+        <p class="mono">Option A</p>
+        <h3>Payment in full</h3>
+        <div class="big">₹ <span id="price">30,000</span><em>one-time, on acceptance</em></div>
+        <ul>
+          <li><b>Website</b> ₹ 15,000</li>
+          <li><b>AI assistant</b> ₹ 15,000</li>
+          <li><b>Then monthly</b> ₹ 4,500</li>
+        </ul>
+        <p class="yr">First-year total ₹ 84,000</p>
+      </div>
+
+      <div class="opt">
+        <p class="mono">Option B</p>
+        <h3>Monthly plan</h3>
+        <div class="big">₹ 7,500<em>per month · nothing upfront</em></div>
+        <ul>
+          <li><b>Includes</b> everything above</li>
+          <li><b>For</b> 12 months</li>
+          <li><b>Then reduces to</b> ₹ 4,500</li>
+        </ul>
+        <p class="yr">First-year total ₹ 90,000</p>
+      </div>
+    </div>
+
+    <p class="sub reveal" style="margin-top:20px">Option B costs ₹ 6,000 more across the year. That difference is the cost of spreading the build over twelve months rather than paying for it at the start — stated openly rather than hidden in the monthly figure. It runs for a twelve-month minimum, and full ownership of the website transfers to Chromgate once the twelve payments are complete.</p>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 07 NOT INCLUDED -->
+  <section>
+    <p class="mono eyebrow reveal">07 — What this does not include</p>
+    <h2 class="reveal">So there are no surprises later.</h2>
+    <ul class="plain reveal">
+      <li>Professional photography of your products or the Karjan works. The site currently uses images recovered from the catalogue.</li>
+      <li>Automatic delivery of enquiry forms to email, WhatsApp or a CRM — the forms currently direct visitors to phone and email instead.</li>
+      <li>Ongoing article writing from the 106-topic plan. The plan is yours; publishing from it is separate.</li>
+      <li>Your domain name renewal (roughly ₹900 a year, registered in Chromgate's name and under your control).</li>
+      <li>Testimonials, client logos or certification badges — none were fabricated, and these can be added the moment you supply real ones.</li>
+    </ul>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 08 OPTIONAL -->
+  <section>
+    <p class="mono eyebrow reveal">08 — If you want more later</p>
+    <h2 class="reveal">Optional, and priced upfront.</h2>
+    <ul class="addons reveal">
+      <li><b>Enquiry automation — forms to email / WhatsApp / CRM</b><span>₹ 4,000 one-time</span></li>
+      <li><b>Search growth retainer — publishing from the 106-topic plan</b><span>from ₹ 4,000 / month</span></li>
+      <li><b>Product photography day at the Karjan works</b><span>on request</span></li>
+    </ul>
+  </section>
+
+  <div class="rule reveal"></div>
+
+  <!-- ============================================ 09 TERMS -->
+  <section>
+    <p class="mono eyebrow reveal">09 — How it works</p>
+    <ul class="terms reveal">
+      <li><b>To begin</b> Option A: the full amount on acceptance. Option B: the first monthly payment on acceptance.</li>
+      <li><b>Going live</b> The site moves to chromgateinstruments.com and opens to Google once the first payment is received — normally within one working day.</li>
+      <li><b>Monthly services</b> Billed in advance. Under Option A, cancellable with 30 days' notice. Under Option B, a twelve-month minimum term.</li>
+      <li><b>You own it</b> The website, the content and the domain are Chromgate's — registered in your name, under your control, at all times.</li>
+      <li><b>Taxes</b> All figures exclude applicable taxes.</li>
+      <li><b>Valid until</b> 5 September 2026.</li>
+    </ul>
+  </section>
+
+  <section class="cta">
+    <h2 class="reveal">Ready when you are, <span class="serif amber">Swapnil.</span></h2>
+    <div class="btns reveal">
+      <a class="btn btn-primary" href="mailto:hello@orviqo.net?subject=Chromgate%20Instruments%20—%20Accepting%20the%20proposal&body=Hi%20ORVIQO%2C%20we'd%20like%20to%20go%20ahead.%20We%20prefer%20Option%20___%20(A%20or%20B).">Accept &amp; go live →</a>
+      <a class="btn btn-ghost" href="https://chromgate.vercel.app" target="_blank" rel="noopener">See the website first</a>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <div class="brand" style="font-size:.85rem"><span class="dot"><i></i></span>ORVIQO</div>
+      <p class="serif" style="color:var(--ash);margin-top:8px">The quiet kind of famous.</p>
+    </div>
+    <div class="mono" style="text-align:right;line-height:2">
+      hello@orviqo.net<br>orviqo.net<br>Vadodara, India
+    </div>
+  </footer>
+</div>
+
+<script>
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);} });
+  },{threshold:.14});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+
+  var priceEl=document.getElementById('price'), done=false;
+  var pio=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting && !done){ done=true; var t=30000, s=performance.now(), d=1400;
+        // The real figure is already in the HTML, so a failed observer or
+        // blocked script still shows the correct price rather than zero.
+        (function step(now){ var p=Math.min((now-s)/d,1); var v=Math.round((1-Math.pow(1-p,3))*t);
+          priceEl.textContent=v.toLocaleString('en-IN'); if(p<1)requestAnimationFrame(step); })(s);
+      }
+    });
+  },{threshold:.4});
+  pio.observe(document.querySelector('.opt.feature'));
+</script>
+</body>
+</html>
