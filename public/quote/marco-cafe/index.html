@@ -100,6 +100,19 @@
   .addons li b{color:var(--moon);font-weight:600}
   .addons li span{font-family:'Fragment Mono',monospace;color:var(--corona);white-space:nowrap;font-size:.85rem}
 
+  /* recommended services */
+  .tag{display:inline-block;font-family:'Fragment Mono',monospace;font-size:.6rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--night);background:var(--corona);border-radius:3px;
+    padding:3px 8px;margin-bottom:10px}
+  .summary{margin-top:30px;border:1px solid var(--hair);border-radius:8px;overflow:hidden}
+  .summary .row{display:flex;justify-content:space-between;gap:16px;padding:13px 20px;
+    border-bottom:1px solid var(--hair);font-size:.9rem;color:var(--ash)}
+  .summary .row:last-child{border-bottom:0}
+  .summary .row.head{background:rgba(255,139,61,.07);color:var(--corona);
+    font-family:'Fragment Mono',monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase}
+  .summary .row b{color:var(--moon);font-weight:500}
+  .summary .row span{font-family:'Fragment Mono',monospace;color:var(--moon);white-space:nowrap}
+
   /* terms */
   .terms li{list-style:none;color:var(--ash);padding:10px 0;border-bottom:1px solid var(--hair);display:flex;gap:14px;font-size:.95rem}
   .terms li b{color:var(--moon);min-width:140px;font-weight:600}
@@ -229,20 +242,51 @@
 
   <div class="rule reveal"></div>
 
-  <!-- ============================================ 04 OPTIONAL -->
+  <!-- ============================================ 04 RECOMMENDED -->
   <section>
-    <p class="mono eyebrow reveal">04 — If you want more later</p>
-    <h2 class="reveal">Optional, and priced upfront.</h2>
-    <ul class="addons reveal">
-      <li><b>Care plan, after the free first month</b><span>₹ 1,000 / month</span></li>
-      <li><b>Photography — half day at the café</b><span>₹ 6,000 one-time</span></li>
-      <li><b>Online table booking</b><span>from ₹ 6,000 one-time</span></li>
-      <li><b>Google Business Profile management</b><span>₹ 2,000 / month</span></li>
-    </ul>
-    <p class="sub reveal" style="margin-top:18px">None of these are required. The website works completely without them — hosting for a site this size is free, and you own the accounts.</p>
-  </section>
+    <p class="mono eyebrow reveal">04 — Recommended next</p>
+    <h2 class="reveal">What we'd do next, in the order we'd do it.</h2>
+    <p class="sub reveal">None of these are required — the website works completely without them. These are the four things that would make the most difference once you're live, in the order we'd tackle them, priced upfront.</p>
 
-  <div class="rule reveal"></div>
+    <div class="lines reveal">
+
+      <div class="line">
+        <div class="line-head"><h3><span class="tag">Recommended first</span></h3></div>
+        <div class="line-head" style="margin-top:-6px"><h3>Google Business Profile</h3><span class="amt">₹ 3,000 one-time</span></div>
+        <p>Your Google listing set up properly and matched to the website: name, address and hours identical, the right categories, your photos, and the menu linked. Ongoing management — posts, photo updates, replying to reviews — available at ₹ 1,500 / month.</p>
+        <p class="why"><b>Why this one first:</b> when someone nearby searches "café near me", Google shows the map listing before it shows any website. That listing brings in more walk-ins than the site will on its own. The website's job is to convince someone once they've found you — this is what gets you found.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Photography — half day at the café</h3><span class="amt">₹ 6,000 one-time</span></div>
+        <p>A half day photographing the space, the coffee and the food, shot to fit the layouts the site is built around.</p>
+        <p class="why"><b>Why it matters:</b> the design is deliberately photo-forward — large images, few words, the atmosphere doing the selling. Your own phone photos will work. Good photographs are what make that design do its job, and they're reusable across Instagram, Google and delivery apps.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Care plan, after the free first month</h3><span class="amt">₹ 1,000 / month</span></div>
+        <p>Hosting kept running, the site kept updated and secure, and small changes — a new dish, a price, a holiday closure — made for you whenever you need them.</p>
+        <p class="why"><b>Why it matters:</b> a café changes constantly. Without this the site still runs perfectly well and you can edit the menu yourself; this is for when you'd rather send a message than do it.</p>
+      </div>
+
+      <div class="line">
+        <div class="line-head"><h3>Online table booking</h3><span class="amt">from ₹ 6,000 one-time</span></div>
+        <p>Guests reserve a table from the website, and you see the bookings on your phone.</p>
+        <p class="why"><b>Why it's last:</b> only worth it if you actually take reservations. If Marco Café is walk-in, this adds a button nobody presses — we'd rather tell you that than sell it.</p>
+      </div>
+    </div>
+
+    <div class="summary reveal">
+      <div class="row head"><b>Recommended service</b><span>Charge</span></div>
+      <div class="row"><b>Google Business Profile setup</b><span>₹ 3,000 one-time</span></div>
+      <div class="row"><b>Google Business Profile management (optional)</b><span>₹ 1,500 / month</span></div>
+      <div class="row"><b>Photography — half day</b><span>₹ 6,000 one-time</span></div>
+      <div class="row"><b>Care plan, after the free month</b><span>₹ 1,000 / month</span></div>
+      <div class="row"><b>Online table booking</b><span>from ₹ 6,000 one-time</span></div>
+    </div>
+
+    <p class="sub reveal" style="margin-top:18px">Take any of these, all of them, or none. They can be added at any point — there's no advantage to deciding now.</p>
+  </section>
 
   <!-- ============================================ 05 TIMELINE -->
   <section>
